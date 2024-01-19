@@ -1,7 +1,9 @@
 package chess;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Collection;
+import java.util.Objects;
+import chess.moveFinders.bishopMoveFinder;
 
 /**
  * Represents a single chess piece
@@ -51,29 +53,11 @@ public class ChessPiece {
      * @return Collection of valid moves of class ChessMove
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+        HashSet<ChessMove> possibleMoves = new HashSet<>();
 
         // Bishop testing stuff
         if (this._type == PieceType.BISHOP){
-
-            final int row =myPosition.getRow();
-            final int col = myPosition.getColumn();
-
-            for (int i=1; i<=5; i++) {
-
-                if (onBoard(row+i,col+i)){
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row+i,col+i), null));
-                }
-                if (onBoard(row+i,col-i)){
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row+i,col-i), null));
-                }
-                if (onBoard(row-i,col-i)){
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row-i,col-i), null));
-                }
-                if (onBoard(row-i,col+i)){
-                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row-i,col+i), null));
-                }
-            }
+            return bishopMoveFinder.findMoves(board, myPosition);
         }
 
         return possibleMoves;
@@ -84,7 +68,29 @@ public class ChessPiece {
      *
      * @return a boolean
      */
-    public boolean onBoard(int row, int col) {
-      return row >= 1 && col >= 1 && row <= 8 && col <= 8;
+    public static boolean isBlocked(ChessPiece piece, ChessBoard board, int row, int col) {
+        if (!piece.onBoard(row, col)) {return false;}
+
+        ChessGame.TeamColor color = piece.getTeamColor();
+        ChessPiece potentialPiece = board.getPiece(new ChessPosition(row, col)) ;
+
+        return  potentialPiece != null && potentialPiece.getTeamColor() == color;
+    }
+
+    private boolean onBoard(int row, int col){
+        return row >= 1 && col >= 1 && row <= 8 && col <= 8;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return _color == that._color && _type == that._type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_color, _type);
     }
 }

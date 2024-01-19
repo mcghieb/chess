@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Represents moving a chess piece on a chessboard
@@ -58,5 +59,18 @@ public class ChessMove {
         stringBuilder.append("piece:").append(_piece).append("||");
 
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessMove chessMove = (ChessMove) o;
+        return Objects.equals(_start, chessMove._start) && Objects.equals(_end, chessMove._end) && _piece == chessMove._piece;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_start, _end, _piece);
     }
 }
