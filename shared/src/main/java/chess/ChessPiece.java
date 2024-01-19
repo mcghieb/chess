@@ -48,20 +48,35 @@ public class ChessPiece {
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
      *
-     * @return Collection of valid moves
+     * @return Collection of valid moves of class ChessMove
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
+        // Bishop testing stuff
         if (this._type == PieceType.BISHOP){
-            ArrayList<ChessPosition> possiblePositions = new ArrayList<>();
 
+            final int row =myPosition.getRow();
+            final int col = myPosition.getColumn();
 
+            for (int i=1; i<=5; i++) {
 
-
-
-            return new ArrayList<>();
+                if (onBoard(row+i,col+i)){
+                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row+i,col+i), null));
+                }
+                if (onBoard(row+i,col-i)){
+                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row+i,col-i), null));
+                }
+                if (onBoard(row-i,col-i)){
+                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row-i,col-i), null));
+                }
+                if (onBoard(row-i,col+i)){
+                    possibleMoves.add(new ChessMove(myPosition, new ChessPosition(row-i,col+i), null));
+                }
+            }
         }
 
+        return possibleMoves;
     }
 
     /**
@@ -70,6 +85,6 @@ public class ChessPiece {
      * @return a boolean
      */
     public boolean onBoard(int row, int col) {
-        
+      return row >= 1 && col >= 1 && row <= 8 && col <= 8;
     }
 }
