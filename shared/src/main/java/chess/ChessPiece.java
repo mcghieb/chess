@@ -3,8 +3,7 @@ package chess;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.Objects;
-import chess.moveFinders.bishopMoveFinder;
-import chess.moveFinders.pawnMoveFinder;
+import chess.moveFinders.*;
 
 /**
  * Represents a single chess piece
@@ -62,6 +61,9 @@ public class ChessPiece {
         }
         if (this._type == PieceType.PAWN) {
             return pawnMoveFinder.findMoves(board, myPosition);
+        }
+        if (this._type == PieceType.KNIGHT) {
+            return knightMoveFinder.findMoves(board, myPosition);
         }
 
         return possibleMoves;
