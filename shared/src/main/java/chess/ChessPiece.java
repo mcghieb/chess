@@ -55,7 +55,6 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
 
-        // Bishop testing stuff
         if (this._type == PieceType.BISHOP) {
             return bishopMoveFinder.findMoves(board, myPosition);
         }
@@ -67,6 +66,9 @@ public class ChessPiece {
         }
         if (this._type == PieceType.ROOK) {
             return rookMoveFinder.findMoves(board, myPosition);
+        }
+        if (this._type == PieceType.QUEEN) {
+            return queenMoveFinder.findMoves(board, myPosition);
         }
 
         return possibleMoves;
