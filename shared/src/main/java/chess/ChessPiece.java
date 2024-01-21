@@ -63,23 +63,6 @@ public class ChessPiece {
         return possibleMoves;
     }
 
-    /**
-     * Calculates whether a specific position is on the board.
-     *
-     * @return a boolean
-     */
-    public static boolean isBlocked(ChessPiece piece, ChessBoard board, int row, int col) {
-        if (!piece.onBoard(row, col)) {return false;}
-
-        ChessGame.TeamColor color = piece.getTeamColor();
-        ChessPiece potentialPiece = board.getPiece(new ChessPosition(row, col)) ;
-
-        return  potentialPiece != null && potentialPiece.getTeamColor() == color;
-    }
-
-    private boolean onBoard(int row, int col){
-        return row >= 1 && col >= 1 && row <= 8 && col <= 8;
-    }
 
     @Override
     public boolean equals(Object o) {
