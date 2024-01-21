@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Collection;
 import java.util.Objects;
 import chess.moveFinders.bishopMoveFinder;
+import chess.moveFinders.pawnMoveFinder;
 
 /**
  * Represents a single chess piece
@@ -56,8 +57,11 @@ public class ChessPiece {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
 
         // Bishop testing stuff
-        if (this._type == PieceType.BISHOP){
+        if (this._type == PieceType.BISHOP) {
             return bishopMoveFinder.findMoves(board, myPosition);
+        }
+        if (this._type == PieceType.PAWN) {
+            return pawnMoveFinder.findMoves(board, myPosition);
         }
 
         return possibleMoves;
