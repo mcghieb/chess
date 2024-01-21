@@ -70,6 +70,9 @@ public class ChessPiece {
         if (this._type == PieceType.QUEEN) {
             return queenMoveFinder.findMoves(board, myPosition);
         }
+        if (this._type == PieceType.KING) {
+            return kingMoveFinder.findMoves(board, myPosition);
+        }
 
         return possibleMoves;
     }
