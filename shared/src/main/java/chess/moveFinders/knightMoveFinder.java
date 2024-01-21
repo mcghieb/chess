@@ -11,29 +11,12 @@ public class knightMoveFinder {
         int initialCol = myPosition.getColumn()+1;
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
 
-        if (!knightBlocked(board, color, initialRow+2, initialCol+1)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow+2, initialCol+1), null));
-        }
-        if (!knightBlocked(board, color, initialRow+2, initialCol-1)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow+2, initialCol-1), null));
-        }
-        if (!knightBlocked(board, color, initialRow-2, initialCol-1)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow-2, initialCol-1), null));
-        }
-        if (!knightBlocked(board, color, initialRow-2, initialCol+1)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow-2, initialCol+1), null));
-        }
-        if (!knightBlocked(board, color, initialRow+1, initialCol+2)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow+1, initialCol+2), null));
-        }
-        if (!knightBlocked(board, color, initialRow+1, initialCol-2)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow+1, initialCol-2), null));
-        }
-        if (!knightBlocked(board, color, initialRow-1, initialCol+2)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow-1, initialCol+2), null));
-        }
-        if (!knightBlocked(board, color, initialRow-1, initialCol-2)) {
-            possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow-1, initialCol-2), null));
+        int[][] knightMoves = {{2, 1}, {2, -1}, {-2, -1}, {-2, 1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+
+        for (int[] move : knightMoves) {
+            if (!knightBlocked(board, color, initialRow + move[0], initialCol + move[1])) {
+                possibleMoves.add(new ChessMove(myPosition, new ChessPosition(initialRow + move[0], initialCol + move[1]), null));
+            }
         }
 
         return possibleMoves;
