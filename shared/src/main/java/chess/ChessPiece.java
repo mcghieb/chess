@@ -65,6 +65,9 @@ public class ChessPiece {
         if (this._type == PieceType.KNIGHT) {
             return knightMoveFinder.findMoves(board, myPosition);
         }
+        if (this._type == PieceType.ROOK) {
+            return rookMoveFinder.findMoves(board, myPosition);
+        }
 
         return possibleMoves;
     }
