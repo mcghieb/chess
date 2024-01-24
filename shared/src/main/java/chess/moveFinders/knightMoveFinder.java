@@ -7,8 +7,8 @@ import java.util.HashSet;
 public class knightMoveFinder {
     public static HashSet<ChessMove> findMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
-        int initialRow = myPosition.getRow()+1;
-        int initialCol = myPosition.getColumn()+1;
+        int initialRow = myPosition.getRow();
+        int initialCol = myPosition.getColumn();
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
 
         int[][] knightMoves = {{2, 1}, {2, -1}, {-2, -1}, {-2, 1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};

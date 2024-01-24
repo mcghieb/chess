@@ -77,6 +77,13 @@ public class ChessPiece {
         return possibleMoves;
     }
 
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "_color=" + _color +
+                ", _type=" + _type +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {

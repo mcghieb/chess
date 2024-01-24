@@ -18,12 +18,7 @@ public class ChessMove {
                      ChessPiece.PieceType promotionPiece) {
         this._start = startPosition;
         this._end = endPosition;
-
-        if (promotionPiece != ChessPiece.PieceType.PAWN) {
-            this._piece = null;
-        } else {
-            this._piece = promotionPiece;
-        }
+        this._piece = promotionPiece;
     }
 
     /**
@@ -65,8 +60,8 @@ public class ChessMove {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(_start, chessMove._start) && Objects.equals(_end, chessMove._end) && _piece == chessMove._piece;
+        ChessMove chessMove=(ChessMove)o;
+        return Objects.equals(_start, chessMove._start) && Objects.equals(_end, chessMove._end) && Objects.equals(_piece, chessMove._piece);
     }
 
     @Override

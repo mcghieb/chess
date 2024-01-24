@@ -7,8 +7,8 @@ import java.util.HashSet;
 public class rookMoveFinder {
     public static HashSet<ChessMove> findMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
-        int initialRow = myPosition.getRow()+1;
-        int initialCol = myPosition.getColumn()+1;
+        int initialRow = myPosition.getRow();
+        int initialCol = myPosition.getColumn();
         int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
 

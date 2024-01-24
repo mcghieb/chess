@@ -21,7 +21,7 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return _row-1;
+        return _row;
     }
 
     /**
@@ -29,7 +29,7 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return _col-1;
+        return _col;
     }
 
     @Override
