@@ -11,7 +11,7 @@ public class specialRules {
   * @Return: Boolean
   */
   public static boolean isPiece(ChessBoard board, int row, int col){
-      return board.getPiece(new ChessPosition(row, col)) != null;
+      return onBoard(row, col) && board.getPiece(new ChessPosition(row, col)) != null;
   }
 
   /**

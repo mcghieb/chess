@@ -65,7 +65,6 @@ public class ChessGame {
         TeamColor teamColor = _board.getPiece(startPosition).getTeamColor();
 
 
-
         for (ChessMove move : possibleMoves) {
             ChessPiece pieceAtEndPosition = _board.getPiece(move.getEndPosition());
 
@@ -93,10 +92,13 @@ public class ChessGame {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece piece = _board.getPiece(startPosition);
+        TeamColor pieceColor = piece.getTeamColor();
+        TeamColor oppositeTeam = (pieceColor == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
         Collection<ChessMove> validMoveList = validMoves(startPosition);
 
-        if (!validMoveList.contains(move)) {
-            throw new InvalidMoveException("Invalid Move: " + move);
+
+        if (pieceColor!=_turn || !validMoveList.contains(move)) {
+            throw new InvalidMoveException("InvalidMoveException");
         }
 
         if (move.getPromotionPiece() == null) {
@@ -107,6 +109,8 @@ public class ChessGame {
             _board.addPiece(endPosition, promotionPiece);
             _board.addPiece(startPosition, null);
         }
+
+        setTeamTurn(oppositeTeam);
 
     }
 

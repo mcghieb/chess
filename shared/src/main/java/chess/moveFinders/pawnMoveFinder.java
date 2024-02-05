@@ -66,6 +66,7 @@ public class pawnMoveFinder {
       ChessPosition pieceRight = new ChessPosition(initialRow+direction, initialCol+1);
       ChessPosition pieceLeft = new ChessPosition(initialRow+direction, initialCol-1);
 
+
       if (!lastMove) {
           if (specialRules.isPiece(board, initialRow+direction, initialCol+1) && board.getPiece(pieceRight).getTeamColor() != color) {
               possibleTakes.add(new ChessMove(myPosition, pieceRight, null));
