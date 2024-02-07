@@ -27,12 +27,14 @@ public class ChessGame {
 
     }
 
+
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
         return _turn;
     }
+
 
     /**
      * Set's which teams turn it is
@@ -43,6 +45,7 @@ public class ChessGame {
         _turn = team;
     }
 
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -50,6 +53,7 @@ public class ChessGame {
         WHITE,
         BLACK
     }
+
 
     /**
      * Gets a valid moves for a piece at the given location
@@ -81,6 +85,7 @@ public class ChessGame {
 
         return validMoves;
     }
+
 
     /**
      * Makes a move in a chess game
@@ -114,6 +119,7 @@ public class ChessGame {
 
     }
 
+
     /**
      * Determines if the given team is in check
      *
@@ -137,6 +143,7 @@ public class ChessGame {
         return false;
     }
 
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -144,8 +151,14 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+
+
+
     }
+
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
@@ -155,8 +168,19 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                if (specialRules.isPiece(_board, row, col) && _board.getPiece(position).getTeamColor() == teamColor && !validMoves(position).isEmpty()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
+
 
     /**
      * Sets this game's chessboard with a given board
@@ -166,6 +190,7 @@ public class ChessGame {
     public void setBoard(ChessBoard board) {
         _board = board;
     }
+
 
     /**
      * Gets the current chessboard
@@ -177,7 +202,6 @@ public class ChessGame {
     }
 
 
-    // SOMETHING IS WRONG HERE, THE POSITION OF THE BLACK KING SHOULD BE
     private ChessPosition findKing(TeamColor color) {
         for (int row = 1; row < 9; row++) {
             for (int col = 1; col < 9; col++) {
