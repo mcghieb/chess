@@ -7,7 +7,7 @@ public class Main {
 //        System.out.println("♕ 240 Chess Server: " + piece);
         try {
             var port = 8080;
-            if (args.length > 1) {
+            if (args.length > 0) {
                 port = Integer.parseInt(args[0]);
             }
 
