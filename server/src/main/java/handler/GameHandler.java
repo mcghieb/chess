@@ -11,11 +11,10 @@ import handler.response.ResponseContainer;
 import service.GameService;
 import spark.Request;
 
-import java.util.Objects;
 
 public class GameHandler extends Handler {
     GameService service;
-    public GameHandler(DataAccess dataAccess) {
+    public GameHandler(DataAccess dataAccess) throws DataAccessException {
         super(dataAccess);
         this.service = new GameService(dataAccess);
     }

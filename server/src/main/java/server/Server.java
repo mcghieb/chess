@@ -39,28 +39,28 @@ public class Server {
     }
 
     private String register(Request req, Response res) throws DataAccessException {
-        RegisterHandler registerHandler = new RegisterHandler(dataAccess);
+        UserHandler userHandler = new UserHandler(dataAccess);
 
-        RegisterResponse response = registerHandler.handleRegister(req);
+        RegisterResponse response = userHandler.handleRegister(req);
         setStatus(response, res);
 
         return new Gson().toJson(response);
     }
 
     private String login(Request req, Response res) throws DataAccessException {
-        LoginHandler loginHandler = new LoginHandler(dataAccess);
+        UserHandler userHandler = new UserHandler(dataAccess);
 
-        LoginResponse response = loginHandler.handleLogin(req);
+        LoginResponse response = userHandler.handleLogin(req);
         setStatus(response, res);
 
         return new Gson().toJson(response);
     }
 
     private String logout(Request req, Response res) throws DataAccessException {
-        LogoutHandler logoutHandler = new LogoutHandler(dataAccess);
+        AuthHandler authHandler = new AuthHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        ResponseContainer response = logoutHandler.handleLogout(authToken);
+        ResponseContainer response = authHandler.handleLogout(authToken);
         setStatus(response, res);
 
         return new Gson().toJson(response);

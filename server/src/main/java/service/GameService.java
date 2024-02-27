@@ -17,20 +17,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameService {
-    private DataAccess dataAccess;
+    private GameDAO gameDAO;
+    private AuthService authService;
 
-    public GameService(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    public GameService(DataAccess dataAccess) throws DataAccessException {
+        this.gameDAO = dataAccess.getGameDAO();
+        this.authService = new AuthService(dataAccess);
     }
 
     public GameListResponse listGames(String authToken) throws DataAccessException {
-        AuthDAO authDAO = dataAccess.getAuthDAO();
-
-        if (authDAO.in(authToken) == null) {
+        if (authService.authenticate(authToken)) {
             return new GameListResponse(null,"Error: unauthorized");
         }
 
-        GameDAO gameDAO = dataAccess.getGameDAO();
         HashMap<Integer, GameData> gamesMap = gameDAO.listGames();
         ArrayList<GameData> gameList = new ArrayList<>();
 
@@ -42,29 +41,24 @@ public class GameService {
     }
 
     public GameCreateResponse createGame(String authToken, GameCreateRequest gameCreateRequest) throws DataAccessException {
-        AuthDAO authDAO = dataAccess.getAuthDAO();
-        GameDAO gameDAO = dataAccess.getGameDAO();
         String gameName = gameCreateRequest.getGameName();
 
         Integer gameID = gameDAO.createGame(gameName);
 
-        if (authDAO.in(authToken) == null) {
+        if (authService.authenticate(authToken)) {
             return new GameCreateResponse(null,"Error: unauthorized");
         }
-
 
         return new GameCreateResponse(gameID, null);
     }
 
     public ResponseContainer joinGame(String authToken, GameJoinRequest gameJoinRequest) throws DataAccessException {
-        AuthDAO authDAO = dataAccess.getAuthDAO();
-        GameDAO gameDAO = dataAccess.getGameDAO();
         Integer gameID = gameJoinRequest.getGameID();
         ChessGame.TeamColor playerColor = gameJoinRequest.getPlayerColor();
-        String username = authDAO.getUsername(authToken);
+        String username = authService.getUsername(authToken);
 
 
-        if (authDAO.in(authToken) == null) {
+        if (authService.authenticate(authToken)) {
             return new ResponseContainer("Error: unauthorized");
         }
 
