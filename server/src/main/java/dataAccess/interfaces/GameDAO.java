@@ -1,7 +1,11 @@
 package dataAccess.interfaces;
 
+import model.GameData;
+
+import java.util.HashMap;
+
 public interface GameDAO {
-//    Object listGames();
-//    String createGame();
+    HashMap<Integer, GameData> listGames();
+    Integer createGame(String gameName);
 //    Object updateGame();
 }

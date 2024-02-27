@@ -21,6 +21,7 @@ public class LogoutHandler extends Handler {
 
         if (logoutResponse != null) {
             response.status(401);
+            return logoutResponse;
         } else {
             response.status(200);
         }
