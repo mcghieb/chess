@@ -1,12 +1,7 @@
 package server;
 
-import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryDataAccess;
-import model.AuthData;
-import model.UserData;
-import dataAccess.DataAccess;
-import service.RegisterService;
+import handler.*;
+import dataAccess.*;
 import spark.*;
 
 public class Server {
@@ -21,10 +16,10 @@ public class Server {
 
         dataAccess = new MemoryDataAccess();
 
-        Spark.externalStaticFileLocation("server/src/resources/web");
+        Spark.externalStaticFileLocation("server/src/main/resources/web");
 
         Spark.delete("/clear", this::clear);
-        Spark.post("/user", this::registerHandler);
+        Spark.post("/user", this::register);
 //        Spark.post("/session", this::loginHandler);
 //        Spark.delete("/session", this::logoutHandler);
 //        Spark.get("/game", this::getGameListHandler);
@@ -40,20 +35,10 @@ public class Server {
         Spark.awaitStop();
     }
 
-    // RETURNS AUTHTOKEN
-    private Response registerHandler(Request req, Response res) throws DataAccessException {
-        RegisterService registerService = new RegisterService(dataAccess);
+    private Response register(Request req, Response res) throws DataAccessException {
+        RegisterHandler registerHandler = new RegisterHandler(dataAccess);
 
-        UserData userData = new Gson().fromJson(req.body(), UserData.class);
-        AuthData authData = registerService.register(userData);
-
-        if (authData != null) {
-            res.status(200);
-            res.body(authData.getAuthToken());
-        } else {
-            res.status(400);
-            res.body("Error: ");
-        }
+        res = registerHandler.handleRegister(req,res);
 
         return res;
     }

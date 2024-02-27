@@ -12,9 +12,8 @@ public class Main {
             }
 
             // IMPLEMENT CHESSSERVER
-            var server = new Server().run(port);
-//            port = server.port();
-//            System.out.printf("Server started on port %d%n", port);
+            int actualPort = new Server().run(port);
+            System.out.println("Port: " + actualPort);
 
         } catch (Throwable ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
