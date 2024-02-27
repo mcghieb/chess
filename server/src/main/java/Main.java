@@ -1,5 +1,5 @@
-import chess.*;
-import server.ChessServer;
+import dataAccess.MemoryDataAccess;
+import server.Server;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,9 +12,9 @@ public class Main {
             }
 
             // IMPLEMENT CHESSSERVER
-            var server = new ChessServer().run(port);
-            port = server.port();
-            System.out.printf("Server started on port %d%n", port);
+            var server = new Server().run(port);
+//            port = server.port();
+//            System.out.printf("Server started on port %d%n", port);
 
         } catch (Throwable ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
