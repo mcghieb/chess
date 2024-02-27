@@ -16,20 +16,11 @@ public class LoginHandler extends Handler {
         super(dataAccess);
     }
 
-    public LoginResponse handleLogin(Request request, Response response) throws DataAccessException {
+    public LoginResponse handleLogin(Request request) throws DataAccessException {
         LoginRequest loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
 
         LoginService service = new LoginService(dataAccess);
-        LoginResponse loginResponse = service.login(loginRequest);
 
-        if (loginResponse != null && Objects.equals(loginResponse.getMessage(), null)) {
-            response.status(200);
-        } else if (loginResponse != null && Objects.equals(loginResponse.getMessage(), "Error: unauthorized")) {
-            response.status(401);
-        } else {
-            response.status(500);
-        }
-
-        return loginResponse;
+        return service.login(loginRequest);
     }
 }

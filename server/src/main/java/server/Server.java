@@ -41,7 +41,8 @@ public class Server {
     private String register(Request req, Response res) throws DataAccessException {
         RegisterHandler registerHandler = new RegisterHandler(dataAccess);
 
-        RegisterResponse response = registerHandler.handleRegister(req, res);
+        RegisterResponse response = registerHandler.handleRegister(req);
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
@@ -49,7 +50,8 @@ public class Server {
     private String login(Request req, Response res) throws DataAccessException {
         LoginHandler loginHandler = new LoginHandler(dataAccess);
 
-        LoginResponse response = loginHandler.handleLogin(req, res);
+        LoginResponse response = loginHandler.handleLogin(req);
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
@@ -58,7 +60,8 @@ public class Server {
         LogoutHandler logoutHandler = new LogoutHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        ResponseContainer response = logoutHandler.handleLogout(authToken, res);
+        ResponseContainer response = logoutHandler.handleLogout(authToken);
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
@@ -67,7 +70,8 @@ public class Server {
         GameHandler gameListHandler = new GameHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        GameListResponse response = gameListHandler.handleGameList(authToken, res);
+        GameListResponse response = gameListHandler.handleGameList(authToken);
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
@@ -76,7 +80,8 @@ public class Server {
         GameHandler gameCreateHandler = new GameHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        GameCreateResponse response = gameCreateHandler.handleGameCreate(authToken, req, res);
+        GameCreateResponse response = gameCreateHandler.handleGameCreate(authToken, req);
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
@@ -85,7 +90,8 @@ public class Server {
         GameHandler gameJoinHandler = new GameHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        ResponseContainer response = gameJoinHandler.handleGameJoin(authToken,req,res);
+        ResponseContainer response = gameJoinHandler.handleGameJoin(authToken,req);
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
@@ -93,10 +99,28 @@ public class Server {
     private String clear(Request req, Response res) {
         ClearHandler clearHandler = new ClearHandler(dataAccess);
 
-        ResponseContainer response = clearHandler.handleClear(res);
+        ResponseContainer response = clearHandler.handleClear();
+        setStatus(response, res);
 
         return new Gson().toJson(response);
     }
 
-//    private void setStatus()
+    private void setStatus(ResponseContainer responseContainer, Response response) {
+        switch (responseContainer.getMessage()) {
+            case "Error: bad request":
+                response.status(400);
+                break;
+            case "Error: unauthorized":
+                response.status(401);
+                break;
+            case "Error: already taken":
+                response.status(403);
+                break;
+            case null:
+                response.status(200);
+                break;
+            default:
+                response.status(500);
+        }
+    }
 }

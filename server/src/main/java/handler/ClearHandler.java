@@ -10,11 +10,9 @@ public class ClearHandler extends Handler {
         super(dataAccess);
     }
 
-    public ResponseContainer handleClear(Response response) {
+    public ResponseContainer handleClear() {
         ClearService service = new ClearService(dataAccess);
         ResponseContainer clearResponse = service.clear();
-
-        response.status(200);
 
         return clearResponse;
     }

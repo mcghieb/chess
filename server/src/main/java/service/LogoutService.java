@@ -20,7 +20,8 @@ public class LogoutService {
             return new ResponseContainer("Error: unauthorized");
         }
 
+
         authDAO.deleteAuth(authToken);
-        return null;
+        return new ResponseContainer(null);
     }
 }
