@@ -19,11 +19,8 @@ public class MemoryUserDAO implements UserDAO {
         return null;
     }
 
-    public String createUser(String username, String password, String email) {
+    public void createUser(String username, String password, String email) {
         usernameList.add(username);
         users.put(username, new UserData(username, password, email));
-
-
-        return "Dummy authToken";
     }
 }

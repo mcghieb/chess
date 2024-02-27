@@ -4,8 +4,8 @@ import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDAO;
 import dataAccess.interfaces.UserDAO;
-import model.AuthData;
-import model.UserData;
+import handler.request.RegisterRequest;
+import handler.response.RegisterResponse;
 
 public class RegisterService {
     private DataAccess dataAccess;
@@ -13,23 +13,28 @@ public class RegisterService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(UserData userData) throws DataAccessException {
-        String username = userData.getUsername();
-        String password = userData.getPassword();
-        String email = userData.getEmail();
+    public RegisterResponse register(RegisterRequest request) throws DataAccessException {
+        String username = request.getUsername();
+        String password = request.getPassword();
+        String email = request.getEmail();
 
         UserDAO userDAO = dataAccess.getUserDAO();
         AuthDAO authDAO = dataAccess.getAuthDAO();
 
-        if ((userDAO.getUser(username)) == null) {
-            userDAO.createUser(username, password, email);
-            return authDAO.createAuth(username);
+        if (username == null || password == null || email == null
+                || username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+            return new RegisterResponse(null, null, "Error: bad request");
         }
 
-        return null;
+        if ((userDAO.getUser(username)) == null) {
+            userDAO.createUser(username, password, email);
+            String authToken = authDAO.createAuth(username);
+
+            return new RegisterResponse(username, authToken, null);
+        } else {
+            return new RegisterResponse(null,null, "Error: already taken");
+        }
+
     }
 
-    public AuthData login() {
-        return null;
-    }
 }

@@ -1,7 +1,9 @@
 package server;
 
+import com.google.gson.Gson;
 import handler.*;
 import dataAccess.*;
+import handler.response.RegisterResponse;
 import spark.*;
 
 public class Server {
@@ -35,12 +37,12 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Response register(Request req, Response res) throws DataAccessException {
+    private String register(Request req, Response res) throws DataAccessException {
         RegisterHandler registerHandler = new RegisterHandler(dataAccess);
 
-        res = registerHandler.handleRegister(req,res);
+        RegisterResponse response = registerHandler.handleRegister(req, res);
 
-        return res;
+        return new Gson().toJson(response);
     }
 
 // GO BACK AND FIX THIS CLASS AFTER MEMORYDATAACCESS CLASSES ARE FINISHED
