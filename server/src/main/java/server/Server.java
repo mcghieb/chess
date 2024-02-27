@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import handler.*;
 import dataAccess.*;
 import handler.response.ClearResponse;
+import handler.response.LoginResponse;
 import handler.response.RegisterResponse;
 import spark.*;
 
@@ -22,7 +23,7 @@ public class Server {
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
-//        Spark.post("/session", this::loginHandler);
+        Spark.post("/session", this::login);
 //        Spark.delete("/session", this::logoutHandler);
 //        Spark.get("/game", this::getGameListHandler);
 //        Spark.post("/game", this::createGameHandler);
@@ -41,6 +42,14 @@ public class Server {
         RegisterHandler registerHandler = new RegisterHandler(dataAccess);
 
         RegisterResponse response = registerHandler.handleRegister(req, res);
+
+        return new Gson().toJson(response);
+    }
+
+    private String login(Request req, Response res) throws DataAccessException {
+        LoginHandler loginHandler = new LoginHandler(dataAccess);
+
+        LoginResponse response = loginHandler.handleLogin(req, res);
 
         return new Gson().toJson(response);
     }
