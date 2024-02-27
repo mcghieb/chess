@@ -1,6 +1,8 @@
 package handler;
 
 import dataAccess.DataAccess;
+import dataAccess.DataAccessException;
+import dataAccess.interfaces.AuthDAO;
 
 import javax.xml.crypto.Data;
 
@@ -11,7 +13,9 @@ public abstract class Handler {
         this.dataAccess = dataAccess;
     }
 
-//    public String checkAuth(String authToken) {
-//
-//    }
+    public String checkAuth(String authToken) throws DataAccessException {
+        AuthDAO authDAO = dataAccess.getAuthDAO();
+
+        return authDAO.in(authToken);
+    }
 }

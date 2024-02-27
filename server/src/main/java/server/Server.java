@@ -5,6 +5,7 @@ import handler.*;
 import dataAccess.*;
 import handler.response.ClearResponse;
 import handler.response.LoginResponse;
+import handler.response.LogoutResponse;
 import handler.response.RegisterResponse;
 import spark.*;
 
@@ -24,7 +25,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
-//        Spark.delete("/session", this::logoutHandler);
+        Spark.delete("/session", this::logout);
 //        Spark.get("/game", this::getGameListHandler);
 //        Spark.post("/game", this::createGameHandler);
 //        Spark.put("/game", this.joinGameHandler);
@@ -50,6 +51,16 @@ public class Server {
         LoginHandler loginHandler = new LoginHandler(dataAccess);
 
         LoginResponse response = loginHandler.handleLogin(req, res);
+
+        return new Gson().toJson(response);
+    }
+
+    private String logout(Request req, Response res) throws DataAccessException {
+        LogoutHandler logoutHandler = new LogoutHandler(dataAccess);
+        String authToken = req.headers("authorization");
+
+
+        LogoutResponse response = logoutHandler.handleLogout(authToken, res);
 
         return new Gson().toJson(response);
     }

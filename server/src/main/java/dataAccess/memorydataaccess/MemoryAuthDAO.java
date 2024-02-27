@@ -4,6 +4,7 @@ import dataAccess.interfaces.AuthDAO;
 import model.AuthData;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
@@ -26,6 +27,20 @@ public class MemoryAuthDAO implements AuthDAO {
         }
 
         return null;
+    }
+
+    public String in(String authToken) {
+        for (AuthData item: authList) {
+            if (Objects.equals(item.getAuthToken(), authToken)) {
+                return authToken;
+            }
+        }
+
+        return null;
+    }
+
+    public void deleteAuth(String authToken) {
+        authList.removeIf(item -> Objects.equals(item.getAuthToken(), authToken));
     }
 
 }

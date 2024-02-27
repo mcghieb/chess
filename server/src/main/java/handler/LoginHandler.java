@@ -4,11 +4,8 @@ import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import handler.request.LoginRequest;
-import handler.request.RegisterRequest;
 import handler.response.LoginResponse;
-import handler.response.RegisterResponse;
 import service.LoginService;
-import service.RegisterService;
 import spark.Request;
 import spark.Response;
 
