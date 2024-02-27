@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import handler.*;
 import dataAccess.*;
+import handler.response.ClearResponse;
 import handler.response.RegisterResponse;
 import spark.*;
 
@@ -15,12 +16,11 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
+        Spark.staticFiles.location("web");
 
         dataAccess = new MemoryDataAccess();
 
-        Spark.externalStaticFileLocation("server/src/main/resources/web");
-
-        Spark.delete("/clear", this::clear);
+        Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
 //        Spark.post("/session", this::loginHandler);
 //        Spark.delete("/session", this::logoutHandler);
@@ -46,8 +46,12 @@ public class Server {
     }
 
 // GO BACK AND FIX THIS CLASS AFTER MEMORYDATAACCESS CLASSES ARE FINISHED
-    private Object clear(Request req, Response res) {
-        return "";
+    private String clear(Request req, Response res) {
+        ClearHandler clearHandler = new ClearHandler(dataAccess);
+
+        ClearResponse response = clearHandler.handleClear(res);
+
+        return new Gson().toJson(response);
     }
 
 }

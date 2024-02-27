@@ -9,5 +9,7 @@ public class MemoryDataAccess extends DataAccess {
         super.setAuthDAO(new MemoryAuthDAO());
         super.setGameDAO(new MemoryGameDAO());
         super.setUserDAO(new MemoryUserDAO());
+        super.setType(DataAccessType.MEMORY);
     }
+
 }
