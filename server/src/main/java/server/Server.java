@@ -86,6 +86,8 @@ public class Server {
         String authToken = req.headers("authorization");
 
         GameJoinResponse response = gameJoinHandler.handleGameJoin(authToken,req,res);
+
+        return new Gson().toJson(response);
     }
 
     private String clear(Request req, Response res) {

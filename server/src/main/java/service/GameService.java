@@ -1,16 +1,21 @@
 package service;
 
+import chess.ChessGame;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDAO;
 import dataAccess.interfaces.GameDAO;
 import handler.request.GameCreateRequest;
+import handler.request.GameJoinRequest;
 import handler.response.GameCreateResponse;
+import handler.response.GameJoinResponse;
 import handler.response.GameListResponse;
+import model.AuthData;
 import model.GameData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class GameService {
     private DataAccess dataAccess;
@@ -50,5 +55,28 @@ public class GameService {
 
 
         return new GameCreateResponse(gameID, null);
+    }
+
+    public GameJoinResponse joinGame(String authToken, GameJoinRequest gameJoinRequest) throws DataAccessException {
+        AuthDAO authDAO = dataAccess.getAuthDAO();
+        GameDAO gameDAO = dataAccess.getGameDAO();
+        Integer gameID = gameJoinRequest.getGameID();
+        ChessGame.TeamColor playerColor = gameJoinRequest.getPlayerColor();
+        String username = authDAO.getUsername(authToken);
+
+
+        if (authDAO.in(authToken) == null) {
+            return new GameJoinResponse("Error: unauthorized");
+        }
+
+        try {
+            gameDAO.updateGame(gameID, playerColor, username);
+        } catch (DataAccessException ex){
+            return new GameJoinResponse(ex.getMessage());
+        }
+
+
+        return new GameJoinResponse(null);
+
     }
 }
