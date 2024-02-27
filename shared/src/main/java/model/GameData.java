@@ -2,12 +2,16 @@ package model;
 
 import chess.ChessGame;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class GameData {
     private int gameID;
     private String whiteUsername;
     private String blackUsername;
     private String gameName;
     private ChessGame game;
+    private ArrayList<String> observers;
 
     public GameData(int gameID, String whiteUsername , String blackUsername, String gameName, ChessGame game) {
         this.gameID=gameID;
@@ -15,10 +19,15 @@ public class GameData {
         this.blackUsername=blackUsername;
         this.gameName=gameName;
         this.game=game;
+        this.observers = new ArrayList<>();
     }
 
     public int getGameID() {
         return gameID;
+    }
+
+    public ArrayList<String> getObservers() {
+        return observers;
     }
 
     public String getWhiteUsername() {

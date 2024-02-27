@@ -69,7 +69,7 @@ public class GameHandler extends Handler {
         } else if (gameJoinResponse != null && Objects.equals(gameJoinResponse.getMessage(), "Error: already taken")) {
             response.status(403);
         } else {
-        response.status(500);
+            response.status(500);
         }
 
         return gameJoinResponse;
