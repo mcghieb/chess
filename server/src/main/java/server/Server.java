@@ -17,7 +17,7 @@ public class Server {
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-        Spark.staticFiles.location("web");
+        Spark.staticFiles.location("server/src/main/resources/web");
 
         dataAccess = new MemoryDataAccess();
 
@@ -58,7 +58,7 @@ public class Server {
         LogoutHandler logoutHandler = new LogoutHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        LogoutResponse response = logoutHandler.handleLogout(authToken, res);
+        ResponseContainer response = logoutHandler.handleLogout(authToken, res);
 
         return new Gson().toJson(response);
     }
@@ -85,7 +85,7 @@ public class Server {
         GameHandler gameJoinHandler = new GameHandler(dataAccess);
         String authToken = req.headers("authorization");
 
-        GameJoinResponse response = gameJoinHandler.handleGameJoin(authToken,req,res);
+        ResponseContainer response = gameJoinHandler.handleGameJoin(authToken,req,res);
 
         return new Gson().toJson(response);
     }
@@ -93,9 +93,10 @@ public class Server {
     private String clear(Request req, Response res) {
         ClearHandler clearHandler = new ClearHandler(dataAccess);
 
-        ClearResponse response = clearHandler.handleClear(res);
+        ResponseContainer response = clearHandler.handleClear(res);
 
         return new Gson().toJson(response);
     }
 
+//    private void setStatus()
 }

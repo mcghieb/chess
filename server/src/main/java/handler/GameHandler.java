@@ -6,8 +6,8 @@ import dataAccess.DataAccessException;
 import handler.request.GameCreateRequest;
 import handler.request.GameJoinRequest;
 import handler.response.GameCreateResponse;
-import handler.response.GameJoinResponse;
 import handler.response.GameListResponse;
+import handler.response.ResponseContainer;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -55,23 +55,23 @@ public class GameHandler extends Handler {
     }
 
 
-    public GameJoinResponse handleGameJoin(String authToken, Request request, Response response) throws DataAccessException {
+    public ResponseContainer handleGameJoin(String authToken, Request request, Response response) throws DataAccessException {
         GameJoinRequest gameJoinRequest = new Gson().fromJson(request.body(), GameJoinRequest.class);
 
-        GameJoinResponse gameJoinResponse = service.joinGame(authToken, gameJoinRequest);
+        ResponseContainer responseContainer = service.joinGame(authToken, gameJoinRequest);
 
-        if (gameJoinResponse != null && Objects.equals(gameJoinResponse.getMessage(), null)) {
+        if (responseContainer != null && Objects.equals(responseContainer.getMessage(), null)) {
             response.status(200);
-        } else if (gameJoinResponse != null && Objects.equals(gameJoinResponse.getMessage(), "Error: bad request")) {
+        } else if (responseContainer != null && Objects.equals(responseContainer.getMessage(), "Error: bad request")) {
             response.status(400);
-        } else if (gameJoinResponse != null && Objects.equals(gameJoinResponse.getMessage(), "Error: unauthorized")) {
+        } else if (responseContainer != null && Objects.equals(responseContainer.getMessage(), "Error: unauthorized")) {
             response.status(401);
-        } else if (gameJoinResponse != null && Objects.equals(gameJoinResponse.getMessage(), "Error: already taken")) {
+        } else if (responseContainer != null && Objects.equals(responseContainer.getMessage(), "Error: already taken")) {
             response.status(403);
         } else {
             response.status(500);
         }
 
-        return gameJoinResponse;
+        return responseContainer;
     }
 }

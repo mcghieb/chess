@@ -1,11 +1,9 @@
 package handler;
 
-import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
-import handler.response.LogoutResponse;
+import handler.response.ResponseContainer;
 import service.LogoutService;
-import spark.Request;
 import spark.Response;
 
 public class LogoutHandler extends Handler {
@@ -14,10 +12,10 @@ public class LogoutHandler extends Handler {
         super(dataAccess);
     }
 
-    public LogoutResponse handleLogout(String authToken, Response response) throws DataAccessException {
+    public ResponseContainer handleLogout(String authToken, Response response) throws DataAccessException {
         LogoutService service = new LogoutService(dataAccess);
 
-        LogoutResponse logoutResponse = service.logout(authToken);
+        ResponseContainer logoutResponse = service.logout(authToken);
 
         if (logoutResponse != null) {
             response.status(401);

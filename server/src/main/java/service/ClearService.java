@@ -1,7 +1,7 @@
 package service;
 
 import dataAccess.DataAccess;
-import handler.response.ClearResponse;
+import handler.response.ResponseContainer;
 
 public class ClearService {
     private DataAccess dataAccess;
@@ -9,8 +9,8 @@ public class ClearService {
         this.dataAccess = dataAccess;
     }
 
-    public ClearResponse clear() {
+    public ResponseContainer clear() {
         dataAccess.clear();
-        return new ClearResponse(null);
+        return new ResponseContainer(null);
     }
 }

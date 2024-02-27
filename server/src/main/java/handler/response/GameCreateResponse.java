@@ -1,12 +1,11 @@
 package handler.response;
 
-public class GameCreateResponse {
+public class GameCreateResponse extends ResponseContainer {
     Integer gameID;
-    String message;
 
     public GameCreateResponse(Integer gameID, String message) {
+        super(message);
         this.gameID=gameID;
-        this.message=message;
     }
 
     public Integer getGameID() {
@@ -17,11 +16,5 @@ public class GameCreateResponse {
         this.gameID=gameID;
     }
 
-    public String getMessage() {
-        return message;
-    }
 
-    public void setMessage(String message) {
-        this.message=message;
-    }
 }

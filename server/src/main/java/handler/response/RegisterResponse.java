@@ -1,17 +1,12 @@
 package handler.response;
 
-public class RegisterResponse {
+public class RegisterResponse extends ResponseContainer {
     String username;
     String authToken;
-    String message;
 
     public RegisterResponse(String username, String authToken, String message) {
+        super(message);
         this.authToken = authToken;
         this.username = username;
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

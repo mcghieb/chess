@@ -1,10 +1,10 @@
 package handler.response;
 
-public class ClearResponse {
+public class ResponseContainer {
     String message;
 
-    public ClearResponse(String message) {
-        this.message=message;
+    public ResponseContainer(String message) {
+        this.message = message;
     }
 
     public String getMessage() {
