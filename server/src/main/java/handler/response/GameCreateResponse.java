@@ -8,13 +8,4 @@ public class GameCreateResponse extends ResponseContainer {
         this.gameID=gameID;
     }
 
-    public Integer getGameID() {
-        return gameID;
-    }
-
-    public void setGameID(Integer gameID) {
-        this.gameID=gameID;
-    }
-
-
 }
