@@ -3,7 +3,6 @@ package service;
 import chess.ChessGame;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
-import dataAccess.interfaces.AuthDAO;
 import dataAccess.interfaces.GameDAO;
 import handler.request.GameCreateRequest;
 import handler.request.GameJoinRequest;
