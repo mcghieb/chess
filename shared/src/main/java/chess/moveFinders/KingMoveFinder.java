@@ -4,6 +4,8 @@ import chess.*;
 
 import java.util.HashSet;
 
+import static chess.moveFinders.FileBlocked.fileBlocked;
+
 public class KingMoveFinder {
     public static HashSet<ChessMove> findMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
@@ -13,7 +15,7 @@ public class KingMoveFinder {
         ChessGame.TeamColor color = board.getPiece(myPosition).getTeamColor();
 
         for (int[] move : moveList) {
-            if (!kingBlocked(board, initialRow+move[0], initialCol+move[1], color)) {
+            if (!fileBlocked(board, initialRow+move[0], initialCol+move[1], color)) {
                 possibleMoves.add(new ChessMove(myPosition,
                         new ChessPosition(initialRow+move[0], initialCol+move[1]),
                         null));
@@ -21,13 +23,6 @@ public class KingMoveFinder {
         }
 
         return possibleMoves;
-    }
-
-    private static boolean kingBlocked(ChessBoard board, int row, int col, ChessGame.TeamColor color) {
-        if (!SpecialRules.onBoard(row, col)) { return true; }
-
-        return SpecialRules.isPiece(board, row, col)
-                && board.getPiece(new ChessPosition(row, col)).getTeamColor() == color;
     }
 
 }

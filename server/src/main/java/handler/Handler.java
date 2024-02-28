@@ -12,5 +12,5 @@ public abstract class Handler {
     Handler(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
-    
+
 }
