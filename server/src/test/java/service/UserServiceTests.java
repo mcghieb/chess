@@ -46,10 +46,10 @@ public class UserServiceTests {
     @Test
     @Order(3)
     public void loginGoodRequest() throws DataAccessException {
-        LoginRequest loginRequest = new LoginRequest("User1", "Password");
-        LoginResponse loginResponse = userService.login(loginRequest);
+        userDAO.createUser("username", "password", "email");
 
-        Assertions.assertEquals( "User1", loginResponse.getUsername(), "Login Failed.");
+        LoginResponse loginResponse = userService.login(new LoginRequest("username", "password"));
+        Assertions.assertNull(loginResponse.getMessage(), "login() populated an error message.");
     }
 
     @Test

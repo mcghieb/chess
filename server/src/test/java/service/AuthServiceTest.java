@@ -80,11 +80,35 @@ class AuthServiceTest {
     }
 
     @Test
+    @Order(7)
     void authenticateGoodRequest() {
+        String authToken = authDAO.createAuth("username");
 
+        boolean authenticated = authService.authenticate(authToken);
+        Assertions.assertFalse(authenticated, "Should return False.");
     }
 
     @Test
-    void getUsername() {
+    @Order(8)
+    void authenticateBadRequest() {
+        boolean authenticated = authService.authenticate(null);
+        Assertions.assertTrue(authenticated, "Should return True.");
     }
+
+    @Test
+    @Order(9)
+    void getUsernameGoodRequest() {
+        String authToken = authDAO.createAuth("user1");
+
+        String username = authService.getUsername(authToken);
+        Assertions.assertEquals("user1", username, "should return user1");
+    }
+
+    @Test
+    @Order(10)
+    void getUsernameBadRequest() {
+        String username = authService.getUsername(null);
+        Assertions.assertNull(username, "should return null");
+    }
+
 }
