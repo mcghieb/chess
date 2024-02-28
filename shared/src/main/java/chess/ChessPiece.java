@@ -12,11 +12,11 @@ import chess.moveFinders.*;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private final ChessGame.TeamColor _color;
-    private ChessPiece.PieceType _type;
+    private final ChessGame.TeamColor color;
+    private ChessPiece.PieceType type;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        _color = pieceColor;
-        _type = type;
+        color = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -35,14 +35,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return _color;
+        return color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return _type;
+        return type;
     }
 
     /**
@@ -55,23 +55,23 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
 
-        if (this._type == PieceType.BISHOP) {
-            return bishopMoveFinder.findMoves(board, myPosition);
+        if (this.type == PieceType.BISHOP) {
+            return BishopMoveFinder.findMoves(board, myPosition);
         }
-        if (this._type == PieceType.PAWN) {
-            return pawnMoveFinder.findMoves(board, myPosition);
+        if (this.type == PieceType.PAWN) {
+            return PawnMoveFinder.findMoves(board, myPosition);
         }
-        if (this._type == PieceType.KNIGHT) {
-            return knightMoveFinder.findMoves(board, myPosition);
+        if (this.type == PieceType.KNIGHT) {
+            return KnightMoveFinder.findMoves(board, myPosition);
         }
-        if (this._type == PieceType.ROOK) {
-            return rookMoveFinder.findMoves(board, myPosition);
+        if (this.type == PieceType.ROOK) {
+            return RookMoveFinder.findMoves(board, myPosition);
         }
-        if (this._type == PieceType.QUEEN) {
-            return queenMoveFinder.findMoves(board, myPosition);
+        if (this.type == PieceType.QUEEN) {
+            return QueenMoveFinder.findMoves(board, myPosition);
         }
-        if (this._type == PieceType.KING) {
-            return kingMoveFinder.findMoves(board, myPosition);
+        if (this.type == PieceType.KING) {
+            return KingMoveFinder.findMoves(board, myPosition);
         }
 
         return possibleMoves;
@@ -80,8 +80,8 @@ public class ChessPiece {
     @Override
     public String toString() {
         return "ChessPiece{" +
-                "_color=" + _color +
-                ", _type=" + _type +
+                "_color=" + color +
+                ", _type=" + type +
                 '}';
     }
 
@@ -90,11 +90,11 @@ public class ChessPiece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
-        return _color == that._color && _type == that._type;
+        return color == that.color && type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_color, _type);
+        return Objects.hash(color, type);
     }
 }

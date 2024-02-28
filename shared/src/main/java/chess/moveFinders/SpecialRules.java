@@ -1,7 +1,7 @@
 package chess.moveFinders;
 import chess.*;
 
-public class specialRules {
+public class SpecialRules {
  /**
   * Returns True if a piece is found on the board
   *

@@ -4,7 +4,7 @@ import chess.*;
 
 import java.util.HashSet;
 
-public class bishopMoveFinder {
+public class BishopMoveFinder {
 
   /**
    * Returns a HashSet of Valid Moves.
@@ -27,7 +27,7 @@ public class bishopMoveFinder {
 
                 if (bishopBlocked(board, newPosition, color)) { break; }
 
-                if (specialRules.isPiece(board, newRow, newCol) && board.getPiece(newPosition).getTeamColor() != color) {
+                if (SpecialRules.isPiece(board, newRow, newCol) && board.getPiece(newPosition).getTeamColor() != color) {
                     possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                     break;
                 } else {
@@ -43,8 +43,8 @@ public class bishopMoveFinder {
       int newRow = newPosition.getRow();
       int newCol = newPosition.getColumn();
 
-      if (!specialRules.onBoard(newRow,newCol)) { return true; }
+      if (!SpecialRules.onBoard(newRow,newCol)) { return true; }
 
-      return specialRules.isPiece(board, newRow,newCol) && board.getPiece(newPosition).getTeamColor() == color;
+      return SpecialRules.isPiece(board, newRow,newCol) && board.getPiece(newPosition).getTeamColor() == color;
   }
 }

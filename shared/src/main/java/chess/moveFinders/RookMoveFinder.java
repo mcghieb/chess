@@ -4,7 +4,7 @@ import chess.*;
 
 import java.util.HashSet;
 
-public class rookMoveFinder {
+public class RookMoveFinder {
     public static HashSet<ChessMove> findMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
         int initialRow = myPosition.getRow();
@@ -18,7 +18,7 @@ public class rookMoveFinder {
                 possibleMoves.add(new ChessMove(myPosition,
                         new ChessPosition(initialRow+(direction[0]*i), initialCol + (direction[1]*i)),
                         null));
-                if (specialRules.isPiece(board, initialRow+(direction[0]*i), initialCol + (direction[1]*i))
+                if (SpecialRules.isPiece(board, initialRow+(direction[0]*i), initialCol + (direction[1]*i))
                         && board.getPiece(new ChessPosition(initialRow+(direction[0]*i), initialCol + (direction[1]*i))).getTeamColor() != color) {
                     break;
                 }
@@ -29,9 +29,9 @@ public class rookMoveFinder {
     }
 
     private static boolean rookBlocked(ChessBoard board, int row, int col, ChessGame.TeamColor color){
-        if (!specialRules.onBoard(row, col)) { return true; }
+        if (!SpecialRules.onBoard(row, col)) { return true; }
 
-        return specialRules.isPiece(board, row, col)
+        return SpecialRules.isPiece(board, row, col)
                 && board.getPiece(new ChessPosition(row, col)).getTeamColor() == color;
     }
 }

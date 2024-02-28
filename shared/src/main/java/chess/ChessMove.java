@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -11,28 +10,28 @@ import java.util.Objects;
  */
 public class ChessMove {
 
-    private ChessPosition _start;
-    private ChessPosition _end;
-    private ChessPiece.PieceType _piece;
+    private ChessPosition start;
+    private ChessPosition end;
+    private ChessPiece.PieceType piece;
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this._start = startPosition;
-        this._end = endPosition;
-        this._piece = promotionPiece;
+        this.start= startPosition;
+        this.end= endPosition;
+        this.piece= promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return _start;
+        return start;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        return _end;
+        return end;
     }
 
     /**
@@ -42,16 +41,16 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return _piece;
+        return piece;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("start: ").append(_start.getRow()).append(",").append(_start.getColumn()).append(";");
-        stringBuilder.append("end: ").append(_end.getRow()).append(",").append(_end.getColumn()).append(";");
-        stringBuilder.append("piece:").append(_piece).append("||");
+        stringBuilder.append("start: ").append(start.getRow()).append(",").append(start.getColumn()).append(";");
+        stringBuilder.append("end: ").append(end.getRow()).append(",").append(end.getColumn()).append(";");
+        stringBuilder.append("piece:").append(piece).append("||");
 
         return stringBuilder.toString();
     }
@@ -61,11 +60,11 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove=(ChessMove)o;
-        return Objects.equals(_start, chessMove._start) && Objects.equals(_end, chessMove._end) && Objects.equals(_piece, chessMove._piece);
+        return Objects.equals(start, chessMove.start) && Objects.equals(end, chessMove.end) && Objects.equals(piece, chessMove.piece);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_start, _end, _piece);
+        return Objects.hash(start, end, piece);
     }
 }

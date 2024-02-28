@@ -3,10 +3,9 @@ package chess.moveFinders;
 import chess.*;
 import chess.ChessMove;
 
-import javax.imageio.event.IIOWriteWarningListener;
 import java.util.HashSet;
 
-public class pawnMoveFinder {
+public class PawnMoveFinder {
   public static HashSet<ChessMove> findMoves(ChessBoard board,ChessPosition myPosition) {
       HashSet<ChessMove> possibleMoves = new HashSet<>();
       HashSet<ChessMove> possibleForward = forwardMoves(board,new ChessPosition(myPosition.getRow(), myPosition.getColumn()));
@@ -50,7 +49,7 @@ public class pawnMoveFinder {
   }
 
   private static boolean pawnForwardBlocked(ChessBoard board, ChessPosition thisPosition) {
-      if (!specialRules.onBoard(thisPosition.getRow(), thisPosition.getColumn())) {
+      if (!SpecialRules.onBoard(thisPosition.getRow(), thisPosition.getColumn())) {
           return false;
       }
       return board.getPiece(thisPosition) != null;
@@ -68,20 +67,20 @@ public class pawnMoveFinder {
 
 
       if (!lastMove) {
-          if (specialRules.isPiece(board, initialRow+direction, initialCol+1) && board.getPiece(pieceRight).getTeamColor() != color) {
+          if (SpecialRules.isPiece(board, initialRow+direction, initialCol+1) && board.getPiece(pieceRight).getTeamColor() != color) {
               possibleTakes.add(new ChessMove(myPosition, pieceRight, null));
           }
-          if (specialRules.isPiece(board, initialRow+direction, initialCol-1) && board.getPiece(pieceLeft).getTeamColor() != color) {
+          if (SpecialRules.isPiece(board, initialRow+direction, initialCol-1) && board.getPiece(pieceLeft).getTeamColor() != color) {
               possibleTakes.add(new ChessMove(myPosition, pieceLeft, null));
           }
       } else if (lastMove) {
-          if (specialRules.isPiece(board, initialRow+direction, initialCol+1) && board.getPiece(pieceRight).getTeamColor() != color) {
+          if (SpecialRules.isPiece(board, initialRow+direction, initialCol+1) && board.getPiece(pieceRight).getTeamColor() != color) {
               possibleTakes.add(new ChessMove(myPosition, pieceRight, ChessPiece.PieceType.KNIGHT));
               possibleTakes.add(new ChessMove(myPosition, pieceRight, ChessPiece.PieceType.BISHOP));
               possibleTakes.add(new ChessMove(myPosition, pieceRight, ChessPiece.PieceType.ROOK));
               possibleTakes.add(new ChessMove(myPosition, pieceRight, ChessPiece.PieceType.QUEEN));
           }
-          if (specialRules.isPiece(board, initialRow+direction, initialCol-1) && board.getPiece(pieceLeft).getTeamColor() != color) {
+          if (SpecialRules.isPiece(board, initialRow+direction, initialCol-1) && board.getPiece(pieceLeft).getTeamColor() != color) {
               possibleTakes.add(new ChessMove(myPosition, pieceLeft, ChessPiece.PieceType.KNIGHT));
               possibleTakes.add(new ChessMove(myPosition, pieceLeft, ChessPiece.PieceType.BISHOP));
               possibleTakes.add(new ChessMove(myPosition, pieceLeft, ChessPiece.PieceType.ROOK));

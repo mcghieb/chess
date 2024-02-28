@@ -22,10 +22,6 @@ public class GameData {
         this.observers = new ArrayList<>();
     }
 
-    public int getGameID() {
-        return gameID;
-    }
-
     public ArrayList<String> getObservers() {
         return observers;
     }
@@ -44,21 +40,5 @@ public class GameData {
 
     public void setBlackUsername(String blackUsername) {
         this.blackUsername=blackUsername;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName=gameName;
-    }
-
-    public ChessGame getGame() {
-        return game;
-    }
-
-    public void setGame(ChessGame game) {
-        this.game=game;
     }
 }

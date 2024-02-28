@@ -6,11 +6,11 @@ import chess.ChessPosition;
 
 import java.util.HashSet;
 
-public class queenMoveFinder {
+public class QueenMoveFinder {
     public static HashSet<ChessMove> findMoves (ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
-        HashSet<ChessMove> diagonals = bishopMoveFinder.findMoves(board, myPosition);
-        HashSet<ChessMove> files = rookMoveFinder.findMoves(board, myPosition);
+        HashSet<ChessMove> diagonals = BishopMoveFinder.findMoves(board, myPosition);
+        HashSet<ChessMove> files = RookMoveFinder.findMoves(board, myPosition);
 
         if (!diagonals.isEmpty()) {
             possibleMoves.addAll(diagonals);

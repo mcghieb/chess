@@ -4,7 +4,7 @@ import chess.*;
 
 import java.util.HashSet;
 
-public class knightMoveFinder {
+public class KnightMoveFinder {
     public static HashSet<ChessMove> findMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> possibleMoves = new HashSet<>();
         int initialRow = myPosition.getRow();
@@ -24,8 +24,8 @@ public class knightMoveFinder {
 
     private static boolean knightBlocked(ChessBoard board, ChessGame.TeamColor color, int row, int col) {
         ChessPosition newPosition = new ChessPosition(row, col);
-        if (!specialRules.onBoard(row, col)) { return true; }
+        if (!SpecialRules.onBoard(row, col)) { return true; }
 
-        return specialRules.isPiece(board, row, col) && board.getPiece(newPosition).getTeamColor() == color;
+        return SpecialRules.isPiece(board, row, col) && board.getPiece(newPosition).getTeamColor() == color;
     }
 }
