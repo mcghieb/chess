@@ -6,18 +6,15 @@ import dataAccess.*;
 import handler.response.*;
 import spark.*;
 
-import javax.xml.crypto.Data;
-
 public class Server {
     private DataAccess dataAccess;
 
-    public Server() {
-
-    }
+    public Server() { }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-        Spark.staticFiles.location("server/src/main/resources/web");
+
+        Spark.staticFiles.location("/web");
 
         dataAccess = new MemoryDataAccess();
 
