@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AuthServiceTest {
     private static DataAccess dataAccess;
-    private static UserDAO userDAO;
     private static AuthDAO authDAO;
     private static AuthService authService;
 
@@ -24,7 +23,6 @@ class AuthServiceTest {
     public static void init() throws DataAccessException {
         dataAccess=new MemoryDataAccess();
         authService=new AuthService(dataAccess);
-        userDAO=dataAccess.getUserDAO();
         authDAO=dataAccess.getAuthDAO();
     }
 
