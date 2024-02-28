@@ -12,10 +12,5 @@ public abstract class Handler {
     Handler(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
-
-    public String checkAuth(String authToken) throws DataAccessException {
-        AuthDAO authDAO = dataAccess.getAuthDAO();
-
-        return authDAO.in(authToken);
-    }
+    
 }
