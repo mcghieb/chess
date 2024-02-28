@@ -9,4 +9,8 @@ public class LoginResponse extends ResponseContainer {
         this.username=username;
         this.authToken=authToken;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }

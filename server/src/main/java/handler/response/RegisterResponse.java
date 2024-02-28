@@ -9,4 +9,8 @@ public class RegisterResponse extends ResponseContainer {
         this.authToken = authToken;
         this.username = username;
     }
+
+    public String getAuthToken() {
+        return authToken;
+    }
 }
