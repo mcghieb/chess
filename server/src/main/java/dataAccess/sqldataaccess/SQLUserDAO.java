@@ -3,14 +3,10 @@ package dataAccess.sqldataaccess;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import dataAccess.interfaces.UserDAO;
-import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Vector;
 
 public class SQLUserDAO implements UserDAO {
 

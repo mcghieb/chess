@@ -42,22 +42,22 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
 
-            var createAuthTable = "create table if not exists chess.auth (username varchar(255), auth_token varchar(255))";
+            var createAuthTable = "create table if not exists chess.auth (username varchar(255) not null, auth_token varchar(255) not null)";
             try (var preparedStatement = conn.prepareStatement(createAuthTable)) {
                 preparedStatement.executeUpdate();
             }
 
-            var createUserTable = "create table if not exists chess.user (username varchar(255) primary key, password varchar(255), email varchar(255) unique)";
+            var createUserTable = "create table if not exists chess.user (username varchar(255) primary key not null, password varchar(255) not null, email varchar(255) unique)";
             try (var preparedStatement = conn.prepareStatement(createUserTable)) {
                 preparedStatement.executeUpdate();
             }
 
-            var createGameTable = "create table if not exists chess.game (game_id int not null auto_increment primary key, game_name varchar(255) unique, white_username varchar(255), black_username varchar(255), game varchar(4000) )";
+            var createGameTable = "create table if not exists chess.game (game_id int not null auto_increment primary key, game_name varchar(255) unique not null, white_username varchar(255), black_username varchar(255), game varchar(4000) )";
             try (var preparedStatement = conn.prepareStatement(createGameTable)) {
                 preparedStatement.executeUpdate();
             }
 
-            var createObserversTable = "create table if not exists chess.observers (game_id int primary key, username varchar(255), auth_token varchar(255))";
+            var createObserversTable = "create table if not exists chess.observers (game_id int primary key not null, username varchar(255))";
             try (var preparedStatement = conn.prepareStatement(createObserversTable)) {
                 preparedStatement.executeUpdate();
             }
