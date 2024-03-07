@@ -51,6 +51,7 @@ public abstract class DataAccess {
             this.setUserDAO(new MemoryUserDAO());
         } else if (type == DataAccessType.SQL) {
             authDAO.clearAuth();
+            userDAO.clearUser();
         }
     }
 }

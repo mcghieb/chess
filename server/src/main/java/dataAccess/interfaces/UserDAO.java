@@ -5,4 +5,6 @@ public interface UserDAO {
     public void createUser(String username, String password, String email);
 
     public String checkCredentials(String username, String password);
+
+    void clearUser();
 }
