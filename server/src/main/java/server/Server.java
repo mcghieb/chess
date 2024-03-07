@@ -19,7 +19,12 @@ public class Server {
         Spark.staticFiles.location("/web");
 
 //        dataAccess = new MemoryDataAccess();
-        dataAccess = new SQLDataAccess();
+        try {
+            dataAccess = new SQLDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);

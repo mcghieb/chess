@@ -8,7 +8,8 @@ import java.sql.Connection;
 
 public class SQLDataAccess extends DataAccess {
 
-    public SQLDataAccess(){
+    public SQLDataAccess() throws DataAccessException {
+        DatabaseManager.createDatabase();
         super.setAuthDAO(new SQLAuthDAO());
         super.setGameDAO(new SQLGameDAO());
         super.setUserDAO(new SQLUserDAO());
