@@ -52,6 +52,7 @@ public abstract class DataAccess {
         } else if (type == DataAccessType.SQL) {
             authDAO.clearAuth();
             userDAO.clearUser();
+            gameDAO.clearGame();
         }
     }
 }

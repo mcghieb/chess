@@ -12,8 +12,6 @@ import java.util.Objects;
 import java.util.Vector;
 
 public class SQLUserDAO implements UserDAO {
-    private Vector<String> usernameList = new Vector<>();
-    private HashMap<String, UserData> users = new HashMap<>();
 
     public SQLUserDAO() {
     }

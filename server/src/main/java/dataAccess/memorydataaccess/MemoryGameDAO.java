@@ -60,4 +60,8 @@ public class MemoryGameDAO implements GameDAO {
 
     }
 
+    public void clearGame() {
+        games = new HashMap<>();
+    }
+
 }

@@ -42,16 +42,25 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
 
-            var createAuthTable = "create table auth (username varchar(255),auth_token varchar(255),primary key (username));";
+            var createAuthTable = "create table auth (username varchar(255) primary key," +
+                    "auth_token varchar(255);";
             try (var preparedStatement = conn.prepareStatement(createAuthTable)) {
                 preparedStatement.executeUpdate();
             }
 
-            var createUserTable = "create table user (username varchar(255) primary key, password varchar(255), email varchar(255));"
+            var createUserTable = "create table user (username varchar(255) primary key," +
+                    " password varchar(255), email varchar(255) unique);";
             try (var preparedStatement = conn.prepareStatement(createUserTable)) {
                 preparedStatement.executeUpdate();
             }
-            
+
+            var createGameTable = "create table game (game_id int not null auto_increment primary key," +
+                    " game_name varchar(255) unique, white_username varchar(255), black_username varchar(255)," +
+                    " game varchar(4000) )";
+            try (var preparedStatement = conn.prepareStatement(createGameTable)) {
+                preparedStatement.executeUpdate();
+            }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
