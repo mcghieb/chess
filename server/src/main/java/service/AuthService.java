@@ -5,13 +5,15 @@ import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDAO;
 import handler.response.ResponseContainer;
 
+import java.sql.SQLException;
+
 public class AuthService {
     private AuthDAO authDAO;
     public AuthService(DataAccess dataAccess) throws DataAccessException {
         this.authDAO = dataAccess.getAuthDAO();
     }
 
-    public String createAuth(String username) {
+    public String createAuth(String username) throws SQLException, DataAccessException {
         return authDAO.createAuth(username);
     }
 

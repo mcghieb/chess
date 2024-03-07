@@ -63,7 +63,7 @@ public class GameService {
 
         try {
             gameDAO.updateGame(gameID, playerColor, username);
-        } catch (DataAccessException ex){
+        } catch (Exception ex){
             return new ResponseContainer(ex.getMessage());
         }
 

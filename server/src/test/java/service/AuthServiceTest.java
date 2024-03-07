@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AuthServiceTest {
@@ -29,7 +31,7 @@ class AuthServiceTest {
 
     @Test
     @Order(1)
-    void createAuthGoodRequest() {
+    void createAuthGoodRequest() throws SQLException, DataAccessException {
         String authToken = authService.createAuth("User1");
 
         Assertions.assertNotNull(authToken, "createAuth() Failed.");
@@ -37,7 +39,7 @@ class AuthServiceTest {
 
     @Test
     @Order(2)
-    void createAuthBadRequest() {
+    void createAuthBadRequest() throws SQLException, DataAccessException {
         String authToken = authService.createAuth(null);
 
         Assertions.assertNull(authToken, "createAuth() should have populated an error response message.");
@@ -45,7 +47,7 @@ class AuthServiceTest {
 
     @Test
     @Order(3)
-    void inGoodRequest() {
+    void inGoodRequest() throws SQLException, DataAccessException {
         String authToken = authService.createAuth("User1");
         String confirmedAuthToken = authService.in(authToken);
 
@@ -63,7 +65,7 @@ class AuthServiceTest {
 
     @Test
     @Order(5)
-    void logoutGoodRequest() throws DataAccessException {
+    void logoutGoodRequest() throws DataAccessException, SQLException {
         String authToken = authDAO.createAuth("User1");
 
         authService.logout(authToken);
@@ -79,7 +81,7 @@ class AuthServiceTest {
 
     @Test
     @Order(7)
-    void authenticateGoodRequest() {
+    void authenticateGoodRequest() throws SQLException, DataAccessException {
         String authToken = authDAO.createAuth("username");
 
         boolean authenticated = authService.authenticate(authToken);
@@ -95,7 +97,7 @@ class AuthServiceTest {
 
     @Test
     @Order(9)
-    void getUsernameGoodRequest() {
+    void getUsernameGoodRequest() throws SQLException, DataAccessException {
         String authToken = authDAO.createAuth("user1");
 
         String username = authService.getUsername(authToken);

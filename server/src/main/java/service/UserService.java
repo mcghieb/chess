@@ -7,6 +7,9 @@ import handler.request.LoginRequest;
 import handler.request.RegisterRequest;
 import handler.response.LoginResponse;
 import handler.response.RegisterResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.sql.SQLException;
 
 public class UserService {
     private UserDAO userDAO;
@@ -17,7 +20,9 @@ public class UserService {
         authService = new AuthService(dataAccess);
     }
 
-    public LoginResponse login(LoginRequest request) throws DataAccessException {
+    public LoginResponse login(LoginRequest request) throws DataAccessException, SQLException {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         String username = request.getUsername();
         String password = request.getPassword();
 
@@ -25,6 +30,7 @@ public class UserService {
                 || username.isEmpty() || password.isEmpty()) {
             return new LoginResponse(null, null, "Error: unauthorized");
         }
+
 
         if (userDAO.checkCredentials(username, password) != null) {
             String authToken = authService.createAuth(username);
@@ -34,15 +40,19 @@ public class UserService {
         return new LoginResponse(null, null, "Error: unauthorized");
     }
 
-    public RegisterResponse register(RegisterRequest request) throws DataAccessException {
+    public RegisterResponse register(RegisterRequest request) throws DataAccessException, SQLException {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         String username = request.getUsername();
-        String password = request.getPassword();
+
         String email = request.getEmail();
 
-        if (username == null || password == null || email == null
-                || username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+        if (username == null || request.getPassword() == null || email == null
+                || username.isEmpty() || request.getPassword().isEmpty() || email.isEmpty()) {
             return new RegisterResponse(null, null, "Error: bad request");
         }
+
+        String password = encoder.encode(request.getPassword());
 
         if ((userDAO.getUser(username)) == null) {
             userDAO.createUser(username, password, email);
