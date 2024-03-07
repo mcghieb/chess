@@ -7,10 +7,12 @@ import java.util.Objects;
 import java.util.Vector;
 
 public class MemoryUserDAO implements UserDAO {
-    private Vector<String> usernameList = new Vector<>();
-    private HashMap<String, UserData> users = new HashMap<>();
+    private Vector<String> usernameList;
+    private HashMap<String, UserData> users;
 
     public MemoryUserDAO() {
+        usernameList = new Vector<>();
+        users = new HashMap<>();
     }
 
     public String getUser(String username) {
@@ -32,5 +34,10 @@ public class MemoryUserDAO implements UserDAO {
         }
 
         return null;
+    }
+
+    public void clearUser() {
+        usernameList = new Vector<>();
+        users = new HashMap<>();
     }
 }

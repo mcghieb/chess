@@ -7,6 +7,7 @@ import handler.request.LoginRequest;
 import handler.request.RegisterRequest;
 import handler.response.LoginResponse;
 import handler.response.RegisterResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;
 
@@ -20,8 +21,10 @@ public class UserService {
     }
 
     public LoginResponse login(LoginRequest request) throws DataAccessException, SQLException {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         String username = request.getUsername();
-        String password = request.getPassword();
+        String password = encoder.encode(request.getPassword());
 
         if (username == null || password == null
                 || username.isEmpty() || password.isEmpty()) {
@@ -37,8 +40,10 @@ public class UserService {
     }
 
     public RegisterResponse register(RegisterRequest request) throws DataAccessException, SQLException {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         String username = request.getUsername();
-        String password = request.getPassword();
+        String password = encoder.encode(request.getPassword());
         String email = request.getEmail();
 
         if (username == null || password == null || email == null
