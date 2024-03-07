@@ -15,11 +15,8 @@ import java.util.HashMap;
 
 public class SQLGameDAO implements GameDAO {
     private HashMap<Integer, GameData> games;
-    HashMap<Integer, String> observers;
-
-    public SQLGameDAO(){
-        observers = new HashMap<>();
-    }
+    private HashMap<Integer, String> observers;
+    public SQLGameDAO(){}
 
     public HashMap<Integer, GameData> listGames() {
         games = new HashMap<>();
@@ -31,9 +28,9 @@ public class SQLGameDAO implements GameDAO {
 
                 while (gameSet.next()) {
                     int gameID = gameSet.getInt("game_id");
+                    String gameName = gameSet.getString("game_name");
                     String whiteUsername = gameSet.getString("white_username");
                     String blackUsername = gameSet.getString("black_username");
-                    String gameName = gameSet.getString("game_name");
                     String gameString = gameSet.getString("game");
                     ChessGame game = new Gson().fromJson(gameString, new TypeToken<ChessGame>(){}.getType());
 
@@ -68,7 +65,12 @@ public class SQLGameDAO implements GameDAO {
             try (var sql = conn.prepareStatement(statement2)) {
                 sql.setString(1, gameName);
 
-                return Integer.valueOf(String.valueOf(sql.executeQuery()));
+                ResultSet result = sql.executeQuery();
+                if (result.next()) {
+                    return result.getInt("game_id");
+                } else {
+                    return null;
+                }
             }
 
 
@@ -78,14 +80,18 @@ public class SQLGameDAO implements GameDAO {
     }
 
 
-    public void updateGame(Integer gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException {
+    public void updateGame(Integer gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException, SQLException {
+        makeObservers();
+
         try (var conn = DatabaseManager.getConnection()) {
+            conn.setAutoCommit(false);
 
             String statement = "select * from game where game_id = ? ";
             try (var sql = conn.prepareStatement(statement)) {
                 sql.setString(1, String.valueOf(gameID));
 
                 var result = sql.executeQuery();
+
                 if (!result.next()) {
                     throw new DataAccessException("Error: bad request");
                 }
@@ -96,16 +102,17 @@ public class SQLGameDAO implements GameDAO {
                 if (playerColor == null) {
                     if (username != null && !observers.containsValue(username)) {
                         observers.put(gameID, username);
-
+                        return;
                     } else {
                         throw new DataAccessException("Error: already taken");
                     }
                 } else {
-                    if (playerColor == ChessGame.TeamColor.BLACK && blackUsername == null) {
+                    if (playerColor == ChessGame.TeamColor.BLACK && (blackUsername == null || blackUsername.isEmpty())) {
                         String setUsername = "update game set black_username = ? where game_id = ?";
                         try (var sql2 = conn.prepareStatement(setUsername)) {
                             sql2.setString(1, username);
                             sql2.setString(2, String.valueOf(gameID));
+                            sql2.executeUpdate();
                         }
 
                     } else if (playerColor == ChessGame.TeamColor.WHITE && whiteUsername == null) {
@@ -113,6 +120,7 @@ public class SQLGameDAO implements GameDAO {
                         try (var sql2 = conn.prepareStatement(setUsername)) {
                             sql2.setString(1, username);
                             sql2.setString(2, String.valueOf(gameID));
+                            sql2.executeUpdate();
                         }
                     } else {
                         throw new DataAccessException("Error: already taken");
@@ -121,10 +129,28 @@ public class SQLGameDAO implements GameDAO {
 
             }
 
-        } catch (SQLException | DataAccessException e) {
+            conn.commit();
+
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    public void makeObservers() throws DataAccessException, SQLException {
+        observers = new HashMap<>();
+
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = "select * from observers";
+            try (var sql = conn.prepareStatement(statement)) {
+                ResultSet result = sql.executeQuery();
+
+                while (result.next()) {
+                    observers.put(result.getInt("game_id"), result.getString("username"));
+                }
+            }
+        }
     }
 
 

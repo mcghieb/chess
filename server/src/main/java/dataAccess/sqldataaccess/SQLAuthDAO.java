@@ -4,6 +4,7 @@ import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import dataAccess.interfaces.AuthDAO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -14,19 +15,43 @@ public class SQLAuthDAO implements AuthDAO {
             return null;
         }
 
-        String authToken=UUID.randomUUID().toString();
-
+        // check to see if in auth, if in auth, then delete auth, and create new auth
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "INSERT INTO auth (username, auth_token) values (?, ?)";
+            String statement = "select * from auth where username = ?";
             try (var sql = conn.prepareStatement(statement)) {
                 sql.setString(1, username);
-                sql.setString(2, authToken);
 
-                sql.executeUpdate();
+                ResultSet result = sql.executeQuery();
+                if (result.next()) {
+                    String deleteStatement = "delete from auth where username = ?";
+                    try (var sql2 = conn.prepareStatement(deleteStatement)) {
+                        sql2.setString(1, username);
+                        sql2.executeUpdate();
+                    }
+
+                    String authToken=UUID.randomUUID().toString();
+                    String createStatement = "INSERT INTO auth (username, auth_token) values (?, ?)";
+                    try (var sql2 = conn.prepareStatement(createStatement)) {
+                        sql2.setString(1, username);
+                        sql2.setString(2, authToken);
+
+                        sql2.executeUpdate();
+                        return authToken;
+                    }
+
+                } else {
+                    String authToken=UUID.randomUUID().toString();
+                    String createStatement = "INSERT INTO auth (username, auth_token) values (?, ?)";
+                    try (var sql2 = conn.prepareStatement(createStatement)) {
+                        sql2.setString(1, username);
+                        sql2.setString(2, authToken);
+
+                        sql2.executeUpdate();
+                        return authToken;
+                    }
+                }
             }
         }
-
-        return authToken;
     }
 
     public String in(String authToken) {
@@ -35,7 +60,12 @@ public class SQLAuthDAO implements AuthDAO {
             try (var sql = conn.prepareStatement(statement)) {
                 sql.setString(1, authToken);
 
-                return String.valueOf(sql.executeQuery());
+                ResultSet result = sql.executeQuery();
+                if (result.next()) {
+                    return result.getString("auth_token");
+                } else {
+                    return null;
+                }
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
@@ -48,7 +78,12 @@ public class SQLAuthDAO implements AuthDAO {
             try (var sql = conn.prepareStatement(statement)) {
                 sql.setString(1, authToken);
 
-                return String.valueOf(sql.executeQuery());
+                ResultSet result = sql.executeQuery();
+                if (result.next()) {
+                    return result.getString("username");
+                } else {
+                    return null;
+                }
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);

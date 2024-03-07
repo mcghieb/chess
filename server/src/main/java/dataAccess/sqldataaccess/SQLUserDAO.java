@@ -6,6 +6,7 @@ import dataAccess.interfaces.UserDAO;
 import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
@@ -22,7 +23,14 @@ public class SQLUserDAO implements UserDAO {
             try (var sql = conn.prepareStatement(statement)) {
                 sql.setString(1, username);
 
-                return String.valueOf(sql.executeQuery());
+                try (ResultSet result = sql.executeQuery()){
+                    if (result.next()) {
+                        return result.getString("username");
+                    } else {
+                        return null;
+                    }
+                }
+
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
@@ -46,14 +54,20 @@ public class SQLUserDAO implements UserDAO {
 
     public String checkCredentials(String username, String password) {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "select password where username = ?";
+            String statement = "select password from user where username = ?";
             try (var sql = conn.prepareStatement(statement)) {
                 sql.setString(1, username);
 
-                String retrievedPassword = String.valueOf(sql.executeQuery());
+                String retrievedPassword = null;
+                ResultSet result = sql.executeQuery();
+                if (result.next()) {
+                    retrievedPassword = result.getString("password");
+                } else {
+                    return null;
+                }
 
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                if (encoder.matches(retrievedPassword, password)) {
+                if (encoder.matches(password, retrievedPassword)) {
                     return username;
                 } else {
                     return null;
