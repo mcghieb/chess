@@ -8,6 +8,8 @@ import handler.request.RegisterRequest;
 import handler.response.LoginResponse;
 import handler.response.RegisterResponse;
 
+import java.sql.SQLException;
+
 public class UserService {
     private UserDAO userDAO;
     private AuthService authService;
@@ -17,7 +19,7 @@ public class UserService {
         authService = new AuthService(dataAccess);
     }
 
-    public LoginResponse login(LoginRequest request) throws DataAccessException {
+    public LoginResponse login(LoginRequest request) throws DataAccessException, SQLException {
         String username = request.getUsername();
         String password = request.getPassword();
 
@@ -34,7 +36,7 @@ public class UserService {
         return new LoginResponse(null, null, "Error: unauthorized");
     }
 
-    public RegisterResponse register(RegisterRequest request) throws DataAccessException {
+    public RegisterResponse register(RegisterRequest request) throws DataAccessException, SQLException {
         String username = request.getUsername();
         String password = request.getPassword();
         String email = request.getEmail();

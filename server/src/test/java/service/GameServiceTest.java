@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
+
 
 class GameServiceTest {
     private static DataAccess dataAccess;
@@ -32,7 +34,7 @@ class GameServiceTest {
     }
 
     @Test
-    void listGamesGoodRequest() throws DataAccessException {
+    void listGamesGoodRequest() throws DataAccessException, SQLException {
         String authToken = authDAO.createAuth("username1");
         Integer gameID = gameDAO.createGame("gameName1");
 
@@ -49,7 +51,7 @@ class GameServiceTest {
     }
 
     @Test
-    void createGameGoodRequest() throws DataAccessException {
+    void createGameGoodRequest() throws DataAccessException, SQLException {
         String authToken = authDAO.createAuth("username1");
         GameCreateRequest gameCreateRequest = new GameCreateRequest("GAME1");
 
@@ -67,7 +69,7 @@ class GameServiceTest {
 
 
     @Test
-    void joinGameGoodRequest() throws DataAccessException {
+    void joinGameGoodRequest() throws DataAccessException, SQLException {
         String authToken = authDAO.createAuth("username1");
         Integer gameID = gameDAO.createGame("GAME1");
 

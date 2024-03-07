@@ -46,4 +46,8 @@ public class MemoryAuthDAO implements AuthDAO {
         authList.removeIf(item -> Objects.equals(item.getAuthToken(), authToken));
     }
 
+    public void clearAuth() {
+        authList = new HashSet<>();
+    }
+
 }

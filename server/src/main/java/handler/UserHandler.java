@@ -11,6 +11,8 @@ import handler.response.ResponseContainer;
 import service.UserService;
 import spark.Request;
 
+import java.sql.SQLException;
+
 public class UserHandler extends Handler {
     UserService service;
 
@@ -19,13 +21,13 @@ public class UserHandler extends Handler {
         this.service = new UserService(dataAccess);
     }
 
-    public LoginResponse handleLogin(Request request) throws DataAccessException {
+    public LoginResponse handleLogin(Request request) throws DataAccessException, SQLException {
         LoginRequest loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
 
         return service.login(loginRequest);
     }
 
-    public RegisterResponse handleRegister(Request request) throws DataAccessException {
+    public RegisterResponse handleRegister(Request request) throws DataAccessException, SQLException {
         RegisterRequest registerRequest = new Gson().fromJson(request.body(), RegisterRequest.class);
 
         return service.register(registerRequest);

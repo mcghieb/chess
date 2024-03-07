@@ -6,6 +6,8 @@ import dataAccess.*;
 import handler.response.*;
 import spark.*;
 
+import java.sql.SQLException;
+
 public class Server {
     private DataAccess dataAccess;
 
@@ -35,7 +37,7 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private String register(Request req, Response res) throws DataAccessException {
+    private String register(Request req, Response res) throws DataAccessException, SQLException {
         UserHandler userHandler = new UserHandler(dataAccess);
 
         RegisterResponse response = userHandler.handleRegister(req);
@@ -44,7 +46,7 @@ public class Server {
         return new Gson().toJson(response);
     }
 
-    private String login(Request req, Response res) throws DataAccessException {
+    private String login(Request req, Response res) throws DataAccessException, SQLException {
         UserHandler userHandler = new UserHandler(dataAccess);
 
         LoginResponse response = userHandler.handleLogin(req);

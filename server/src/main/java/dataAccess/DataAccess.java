@@ -49,6 +49,8 @@ public abstract class DataAccess {
             this.setAuthDAO(new MemoryAuthDAO());
             this.setGameDAO(new MemoryGameDAO());
             this.setUserDAO(new MemoryUserDAO());
+        } else if (type == DataAccessType.SQL) {
+            authDAO.clearAuth();
         }
     }
 }

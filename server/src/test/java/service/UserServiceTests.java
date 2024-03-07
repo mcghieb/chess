@@ -9,6 +9,8 @@ import handler.response.RegisterResponse;
 import org.junit.jupiter.api.*;
 import dataAccess.*;
 
+import java.sql.SQLException;
+
 public class UserServiceTests {
     private static DataAccess dataAccess;
     private static UserDAO userDAO;
@@ -24,7 +26,7 @@ public class UserServiceTests {
 
     @Test
     @Order(1)
-    public void registerGoodRequest() throws DataAccessException {
+    public void registerGoodRequest() throws DataAccessException, SQLException {
         RegisterRequest registerRequest = new RegisterRequest(
                 "testusername", "thispassword", "thisemail@gmail.com");
         userService.register(registerRequest);
@@ -35,7 +37,7 @@ public class UserServiceTests {
 
     @Test
     @Order(2)
-    public void registerBadRequest() throws DataAccessException {
+    public void registerBadRequest() throws DataAccessException, SQLException {
         RegisterRequest registerRequest = new RegisterRequest(null, null, null);
         RegisterResponse registerResponse = userService.register(registerRequest);
 
@@ -45,7 +47,7 @@ public class UserServiceTests {
 
     @Test
     @Order(3)
-    public void loginGoodRequest() throws DataAccessException {
+    public void loginGoodRequest() throws DataAccessException, SQLException {
         userDAO.createUser("username", "password", "email");
 
         LoginResponse loginResponse = userService.login(new LoginRequest("username", "password"));
@@ -54,7 +56,7 @@ public class UserServiceTests {
 
     @Test
     @Order(3)
-    public void loginBadRequest() throws DataAccessException {
+    public void loginBadRequest() throws DataAccessException, SQLException {
         LoginRequest loginRequest = new LoginRequest(null, null);
         LoginResponse loginResponse = userService.login(loginRequest);
 
