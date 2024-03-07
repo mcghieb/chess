@@ -46,6 +46,12 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(createAuthTable)) {
                 preparedStatement.executeUpdate();
             }
+
+            var createUserTable = "create table user (username varchar(255) primary key, password varchar(255), email varchar(255));"
+            try (var preparedStatement = conn.prepareStatement(createUserTable)) {
+                preparedStatement.executeUpdate();
+            }
+            
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
