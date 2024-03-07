@@ -6,6 +6,7 @@ import dataAccess.*;
 import handler.response.*;
 import spark.*;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
 public class Server {
@@ -20,6 +21,7 @@ public class Server {
 
 //        dataAccess = new MemoryDataAccess();
         try {
+            DatabaseManager.createDatabase();
             dataAccess = new SQLDataAccess();
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
