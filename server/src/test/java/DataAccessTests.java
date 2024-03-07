@@ -1,7 +1,9 @@
-package dataAccess;
-
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataAccess.DataAccess;
+import dataAccess.DataAccessException;
+import dataAccess.DatabaseManager;
+import dataAccess.SQLDataAccess;
 import dataAccess.interfaces.*;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
@@ -9,13 +11,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import spark.utils.Assert;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class SQLDataAccessTests {
+public class DataAccessTests {
     private static DataAccess dataAccess;
     private static UserDAO userDAO;
     private static AuthDAO authDAO;
