@@ -2,6 +2,8 @@ package dataAccess.memorydataaccess;
 
 import model.UserData;
 import dataAccess.interfaces.UserDAO;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Vector;
@@ -29,7 +31,9 @@ public class MemoryUserDAO implements UserDAO {
 
     public String checkCredentials(String username, String password) {
         UserData userData = users.get(username);
-        if (userData != null && Objects.equals(userData.getPassword(), password)) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (userData != null && encoder.matches(password, userData.getPassword())) {
             return username;
         }
 

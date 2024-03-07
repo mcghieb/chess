@@ -24,12 +24,13 @@ public class UserService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         String username = request.getUsername();
-        String password = encoder.encode(request.getPassword());
+        String password = request.getPassword();
 
         if (username == null || password == null
                 || username.isEmpty() || password.isEmpty()) {
             return new LoginResponse(null, null, "Error: unauthorized");
         }
+
 
         if (userDAO.checkCredentials(username, password) != null) {
             String authToken = authService.createAuth(username);
@@ -43,13 +44,15 @@ public class UserService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         String username = request.getUsername();
-        String password = encoder.encode(request.getPassword());
+
         String email = request.getEmail();
 
-        if (username == null || password == null || email == null
-                || username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+        if (username == null || request.getPassword() == null || email == null
+                || username.isEmpty() || request.getPassword().isEmpty() || email.isEmpty()) {
             return new RegisterResponse(null, null, "Error: bad request");
         }
+
+        String password = encoder.encode(request.getPassword());
 
         if ((userDAO.getUser(username)) == null) {
             userDAO.createUser(username, password, email);
