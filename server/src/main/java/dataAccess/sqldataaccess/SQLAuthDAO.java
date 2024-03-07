@@ -3,12 +3,10 @@ package dataAccess.sqldataaccess;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import dataAccess.interfaces.AuthDAO;
-import model.AuthData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 
 public class SQLAuthDAO implements AuthDAO {
