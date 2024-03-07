@@ -48,7 +48,8 @@ public class UserServiceTests {
     @Test
     @Order(3)
     public void loginGoodRequest() throws DataAccessException, SQLException {
-        userDAO.createUser("username", "password", "email");
+        RegisterRequest registerRequest = new RegisterRequest("username", "password", "email");
+        userService.register(registerRequest);
 
         LoginResponse loginResponse = userService.login(new LoginRequest("username", "password"));
         Assertions.assertNull(loginResponse.getMessage(), "login() populated an error message.");
