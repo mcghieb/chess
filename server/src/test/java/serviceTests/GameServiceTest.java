@@ -1,4 +1,4 @@
-package service;
+package serviceTests;
 
 import chess.ChessGame;
 import dataAccess.DataAccess;
@@ -14,6 +14,7 @@ import handler.response.ResponseContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import service.GameService;
 
 import java.sql.SQLException;
 

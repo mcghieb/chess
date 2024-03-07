@@ -1,4 +1,4 @@
-package service;
+package serviceTests;
 
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import service.AuthService;
 
 import java.sql.SQLException;
 

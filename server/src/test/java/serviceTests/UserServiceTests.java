@@ -1,4 +1,4 @@
-package service;
+package serviceTests;
 
 import dataAccess.interfaces.AuthDAO;
 import dataAccess.interfaces.UserDAO;
@@ -8,6 +8,7 @@ import handler.response.LoginResponse;
 import handler.response.RegisterResponse;
 import org.junit.jupiter.api.*;
 import dataAccess.*;
+import service.UserService;
 
 import java.sql.SQLException;
 
