@@ -21,7 +21,7 @@ public class Server {
 
 //        dataAccess = new MemoryDataAccess();
         try {
-            DatabaseManager.createDatabase();
+//            DatabaseManager.createDatabase();
             dataAccess = new SQLDataAccess();
         } catch (DataAccessException e) {
             throw new RuntimeException(e);

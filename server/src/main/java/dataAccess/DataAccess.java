@@ -50,6 +50,11 @@ public abstract class DataAccess {
             this.setGameDAO(new MemoryGameDAO());
             this.setUserDAO(new MemoryUserDAO());
         } else if (type == DataAccessType.SQL) {
+            try {
+                DatabaseManager.createDatabase();
+            } catch (DataAccessException e) {
+                throw new RuntimeException(e);
+            }
             authDAO.clearAuth();
             userDAO.clearUser();
             gameDAO.clearGame();
