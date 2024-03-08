@@ -2,6 +2,7 @@ package dataAccessTests;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.sun.source.tree.AssertTree;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
@@ -212,7 +213,7 @@ public class dataAccessTests {
     }
 
     @Test
-    @Order(14)
+    @Order(15)
     public void makeBadObservers() throws SQLException, DataAccessException {
         insertTestGame();
 
@@ -220,9 +221,107 @@ public class dataAccessTests {
                 , "This should throw an exception.");
     }
 
+    @Test
+    @Order(16)
+    public void SQLClearGameDAO() throws SQLException {
+        insertTestGame();
+        gameDAO.clearGame();
+
+        Assertions.assertTrue(gameDAO.listGames().isEmpty(), "Games should be empty.");
+    }
 
 
+    @Test
+    @Order(17)
+    public void SQLCreateAuth() throws SQLException, DataAccessException {
+        String authToken = authDAO.createAuth(username);
 
+        Assertions.assertNotNull(authToken, "This should return an authToken");
+    }
+
+    @Test
+    @Order(18)
+    public void SQLCreateBadAuth() throws SQLException, DataAccessException {
+        Assertions.assertThrows(Exception.class, () -> authDAO.createAuth(null),
+                "This should throw an exception");
+    }
+
+
+    @Test
+    @Order(19)
+    public void SQLInAuth() throws SQLException, DataAccessException {
+        String expectedToken = authDAO.createAuth(username);
+        String actualToken = authDAO.in(expectedToken);
+
+        Assertions.assertEquals(expectedToken,actualToken, "This should return the same token.");
+    }
+
+    @Test
+    @Order(20)
+    public void SQLBadInAuth() throws SQLException, DataAccessException {
+        String token = authDAO.in("fakeToken");
+
+        Assertions.assertNull(token, "This should return null.");
+    }
+
+
+    @Test
+    @Order(21)
+    public void SQLGetUsername() throws SQLException, DataAccessException {
+        String statement = "insert into auth (username, auth_token) values (?,?)";
+        try (var sql = conn.prepareStatement(statement)) {
+            sql.setString(1,username);
+            sql.setString(2, "dummyAuth");
+            sql.executeUpdate();
+        }
+
+        String actualUsername = authDAO.getUsername("dummyAuth");
+        Assertions.assertEquals(username, actualUsername, "Should return the same username.");
+    }
+
+    @Test
+    @Order(22)
+    public void SQLGetBadUsername() throws SQLException, DataAccessException {
+        String actualUsername = authDAO.getUsername("dummyAuth");
+        Assertions.assertNull(actualUsername, "Should return null.");
+    }
+
+    @Test
+    @Order(23)
+    public void SQLDeleteAuth() throws SQLException, DataAccessException {
+        String statement = "insert into auth (username, auth_token) values (?,?)";
+        try (var sql = conn.prepareStatement(statement)) {
+            sql.setString(1,username);
+            sql.setString(2, "dummyAuth");
+            sql.executeUpdate();
+        }
+
+        authDAO.deleteAuth("dummyAuth");
+        String token = authDAO.in("dummyAuth");
+        Assertions.assertNull(token);
+    }
+
+    @Test
+    @Order(24)
+    public void SQLDeleteBadAuth() throws SQLException, DataAccessException {
+        Assertions.assertThrows(Exception.class, () -> authDAO.deleteAuth(null)
+                , "This should throw an exception.");
+    }
+
+    @Test
+    @Order(25)
+    public void SQLClearAuth() throws SQLException, DataAccessException {
+        String statement = "insert into auth (username, auth_token) values (?,?)";
+        try (var sql = conn.prepareStatement(statement)) {
+            sql.setString(1,username);
+            sql.setString(2, "dummyAuth");
+            sql.executeUpdate();
+        }
+
+        authDAO.clearAuth();
+        Assertions.assertNull(authDAO.in("dummyAuth"), "Auth should be empty.");
+
+    }
 
 
 }
