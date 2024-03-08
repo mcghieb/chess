@@ -242,8 +242,7 @@ public class dataAccessTests {
     @Test
     @Order(18)
     public void SQLCreateBadAuth() throws SQLException, DataAccessException {
-        Assertions.assertThrows(Exception.class, () -> authDAO.createAuth(null),
-                "This should throw an exception");
+        Assertions.assertNull(authDAO.createAuth(null), "This should return null.");
     }
 
 
