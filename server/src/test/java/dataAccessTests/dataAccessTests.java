@@ -7,12 +7,12 @@ import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import dataAccess.SQLDataAccess;
 import dataAccess.interfaces.*;
-import handler.ClearHandler;
 import model.GameData;
 import org.junit.jupiter.api.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -174,6 +174,54 @@ public class dataAccessTests {
         insertTestGame();
         Assertions.assertThrows(Exception.class, () -> gameDAO.createGame(testGameName));
     }
+
+    @Test
+    @Order(12)
+    public void SQLUpdateGame() throws SQLException, DataAccessException {
+        insertTestGame();
+        gameDAO.updateGame(1, ChessGame.TeamColor.WHITE, username);
+
+        String retrievedUsername = null;
+
+        String statement = "select white_username from game where game_id = 1";
+        try (var sql= conn.prepareStatement(statement)) {
+            ResultSet result = sql.executeQuery();
+            if (result.next()) {
+                retrievedUsername = result.getString("white_username");
+            }
+        }
+
+        Assertions.assertEquals(username, retrievedUsername, "White username should be populated.");
+    }
+
+
+    @Test
+    @Order(13)
+    public void SQLUpdateBadGame() throws SQLException, DataAccessException {
+        Assertions.assertThrows(Exception.class, () -> gameDAO.updateGame(1, ChessGame.TeamColor.WHITE, username)
+                , "This should throw an exception. There are no games in the database.");
+    }
+
+    @Test
+    @Order(14)
+    public void makeObservers() throws SQLException, DataAccessException {
+        insertTestGame();
+
+        Assertions.assertDoesNotThrow(() -> gameDAO.updateGame(1, null, username)
+                , "This should not throw an exception.");
+    }
+
+    @Test
+    @Order(14)
+    public void makeBadObservers() throws SQLException, DataAccessException {
+        insertTestGame();
+
+        Assertions.assertThrows(Exception.class, () -> gameDAO.updateGame(null, null, username)
+                , "This should throw an exception.");
+    }
+
+
+
 
 
 
