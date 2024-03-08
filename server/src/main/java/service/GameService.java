@@ -42,6 +42,10 @@ public class GameService {
     public GameCreateResponse createGame(String authToken, GameCreateRequest gameCreateRequest) throws DataAccessException {
         String gameName = gameCreateRequest.getGameName();
 
+        if (gameName == null) {
+            return new GameCreateResponse(null, "Error: bad request");
+        }
+
         Integer gameID = gameDAO.createGame(gameName);
 
         if (authService.authenticate(authToken)) {

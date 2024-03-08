@@ -7,19 +7,16 @@ import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
 import dataAccess.SQLDataAccess;
 import dataAccess.interfaces.*;
+import handler.ClearHandler;
 import model.GameData;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import spark.utils.Assert;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class SQLDataAccessTests {
+public class dataAccessTests {
     private static DataAccess dataAccess;
     private static UserDAO userDAO;
     private static AuthDAO authDAO;
@@ -73,8 +70,8 @@ public class SQLDataAccessTests {
         }
     }
 
-    @BeforeAll
-    public static void init() throws SQLException, DataAccessException {
+    @BeforeEach
+    public void init() throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         conn = DatabaseManager.getConnection();
 
@@ -166,14 +163,14 @@ public class SQLDataAccessTests {
 
     @Test
     @Order(10)
-    public void SQCreateGame() throws SQLException {
+    public void SQLCreateGame() throws SQLException {
         Integer gameID = gameDAO.createGame(testGameName);
         Assertions.assertNotNull(gameID, "This should return gameID.");
     }
 
     @Test
     @Order(11)
-    public void SQCreateBadGame() throws SQLException {
+    public void SQLCreateBadGame() throws SQLException {
         insertTestGame();
         Assertions.assertThrows(Exception.class, () -> gameDAO.createGame(testGameName));
     }
