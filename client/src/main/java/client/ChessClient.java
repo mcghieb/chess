@@ -1,5 +1,6 @@
 package client;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
@@ -12,6 +13,7 @@ import response.GameListResponse;
 import response.LoginResponse;
 import response.RegisterResponse;
 import server.ServerFacade;
+import ui.PrintBoard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,11 +123,12 @@ public class ChessClient {
                 GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, id);
 
                 server.joinGame(gameJoinRequest, authToken);
-
+                printBoard(params[0]);
             } else if (Objects.equals(params[1], "black")) {
                 GameJoinRequest gameJoinRequest= new GameJoinRequest(ChessGame.TeamColor.BLACK, id);
 
                 server.joinGame(gameJoinRequest, authToken);
+                printBoard(params[0]);
             }
 
             return String.format("Joined game [%s] as %s\n", params[0], params[1]);
@@ -134,10 +137,22 @@ public class ChessClient {
             int id = gameList.get(params[0]).getID();
             GameJoinRequest gameJoinRequest = new GameJoinRequest(null, id);
             server.joinGame(gameJoinRequest, authToken);
+            printBoard(params[0]);
             return String.format("Joined game [%s] as OBSERVER\n", params[0]);
         }
 
         throw new ResponseException(400, "Bad request.\n");
+    }
+
+
+    private void printBoard(String gameListID) {
+        GameData gameData = gameList.get(gameListID);
+        ChessGame game = gameData.getGame();
+        ChessBoard board = game.getBoard();
+
+//        System.out.print(board.toString());
+
+        PrintBoard.printGame(board);
     }
 
 

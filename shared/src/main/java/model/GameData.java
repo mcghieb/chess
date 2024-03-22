@@ -42,6 +42,10 @@ public class GameData {
         this.blackUsername=blackUsername;
     }
 
+    public ChessGame getGame() {
+        return game;
+    }
+
     public String toString() {
         return String.format("GameID: [%s]; GameName: [%s]; White: [%s]; Black: [%s];", gameID, gameName, whiteUsername, blackUsername);
     }
