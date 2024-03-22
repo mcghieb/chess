@@ -31,7 +31,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> registerUser(params);
                 case "login" -> login(params);
-                case "createGame" -> createGame(params[0]);
+                case "create_game" -> createGame(params[0]);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -41,7 +41,7 @@ public class ChessClient {
     }
 
     public String registerUser(String... params) throws ResponseException {
-        if (params.length == 3) {
+        if (params.length == 3 && state == State.LOGGEDOUT) {
             RegisterRequest registerRequest = new RegisterRequest(params[0], params[1], params[2]);
             RegisterResponse registerResponse = server.register(registerRequest);
 
@@ -56,7 +56,7 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ResponseException {
-        if (params.length == 2) {
+        if (params.length == 2 && state == State.LOGGEDOUT) {
             LoginRequest loginRequest = new LoginRequest(params[0], params[1]);
             LoginResponse loginResponse = server.login(loginRequest);
 
@@ -71,6 +71,7 @@ public class ChessClient {
     }
 
     public String createGame(String gameName) throws ResponseException {
+        assertSignedIn();
         if (gameName != null && !gameName.isEmpty()) {
             GameCreateRequest gameCreateRequest = new GameCreateRequest(gameName);
             GameCreateResponse gameCreateResponse = server.createGame(gameCreateRequest, authToken);
@@ -94,10 +95,10 @@ public class ChessClient {
         return """
                 - help
                 - logout
-                - createGame
-                - listGames
-                - joinGame
-                - joinObserver
+                - create_game <game_name>
+                - list_games
+                - join_game <game_id> [WHITE | BLACK | empty]
+                - observe <game_id>
                 - quit
                 """;
     }
