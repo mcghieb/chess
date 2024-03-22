@@ -1,11 +1,10 @@
 package serviceTests;
 
-import dataAccess.interfaces.AuthDAO;
 import dataAccess.interfaces.UserDAO;
-import handler.request.LoginRequest;
-import handler.request.RegisterRequest;
-import handler.response.LoginResponse;
-import handler.response.RegisterResponse;
+import request.LoginRequest;
+import request.RegisterRequest;
+import response.LoginResponse;
+import response.RegisterResponse;
 import org.junit.jupiter.api.*;
 import dataAccess.*;
 import service.UserService;

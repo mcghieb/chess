@@ -1,4 +1,4 @@
-package handler.response;
+package response;
 
 public class RegisterResponse extends ResponseContainer {
     String username;
@@ -12,5 +12,9 @@ public class RegisterResponse extends ResponseContainer {
 
     public String getAuthToken() {
         return authToken;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

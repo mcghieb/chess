@@ -4,12 +4,12 @@ import chess.ChessGame;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.GameDAO;
-import handler.request.GameCreateRequest;
-import handler.request.GameJoinRequest;
-import handler.response.GameCreateResponse;
+import request.GameCreateRequest;
+import request.GameJoinRequest;
+import response.GameCreateResponse;
 
-import handler.response.GameListResponse;
-import handler.response.ResponseContainer;
+import response.GameListResponse;
+import response.ResponseContainer;
 import model.GameData;
 
 import java.util.ArrayList;

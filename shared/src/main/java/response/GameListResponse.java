@@ -1,4 +1,4 @@
-package handler.response;
+package response;
 
 import model.GameData;
 
@@ -10,6 +10,10 @@ public class GameListResponse extends ResponseContainer {
     public GameListResponse(ArrayList<GameData> games, String message) {
         super(message);
         this.games = games;
+    }
+
+    public ArrayList<GameData> getList() {
+        return games;
     }
 
 }
