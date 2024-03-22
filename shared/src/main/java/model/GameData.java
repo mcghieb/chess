@@ -41,4 +41,8 @@ public class GameData {
     public void setBlackUsername(String blackUsername) {
         this.blackUsername=blackUsername;
     }
+
+    public String toString() {
+        return String.format("GameID: [%s]; GameName: [%s]; White: [%s]; Black: [%s];", gameID, gameName, whiteUsername, blackUsername);
+    }
 }

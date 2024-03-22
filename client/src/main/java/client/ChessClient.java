@@ -5,6 +5,7 @@ import request.GameCreateRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.GameCreateResponse;
+import response.GameListResponse;
 import response.LoginResponse;
 import response.RegisterResponse;
 import server.ServerFacade;
@@ -33,6 +34,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "create_game" -> createGame(params[0]);
+                case "list_games" -> listGames();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -77,10 +79,17 @@ public class ChessClient {
             GameCreateRequest gameCreateRequest = new GameCreateRequest(gameName);
             GameCreateResponse gameCreateResponse = server.createGame(gameCreateRequest, authToken);
 
-            return String.format("Created game: %s", gameCreateResponse.getGameID());
+            return String.format("Created game: %s\n", gameCreateResponse.getGameID());
         }
 
         throw new ResponseException(400, "Bad request.\n");
+    }
+
+    public String listGames() throws ResponseException {
+        assertSignedIn();
+        GameListResponse gameListResponse = server.listGames(authToken);
+
+        return gameListResponse.getList();
     }
 
     public String logout() throws ResponseException {

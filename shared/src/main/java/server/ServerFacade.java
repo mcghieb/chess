@@ -6,6 +6,7 @@ import request.GameCreateRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.GameCreateResponse;
+import response.GameListResponse;
 import response.LoginResponse;
 import response.RegisterResponse;
 
@@ -49,6 +50,12 @@ public class ServerFacade {
         var path = "/game";
 
         return this.makeRequest("POST", path, gameCreateRequest, GameCreateResponse.class, authToken);
+    }
+
+    public GameListResponse listGames(String authToken) throws ResponseException {
+        var path = "/game";
+
+        return this.makeRequest("GET", path, null, GameListResponse.class, authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
