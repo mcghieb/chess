@@ -45,4 +45,8 @@ public class GameData {
     public String toString() {
         return String.format("GameID: [%s]; GameName: [%s]; White: [%s]; Black: [%s];", gameID, gameName, whiteUsername, blackUsername);
     }
+
+    public int getID() {
+        return gameID;
+    }
 }

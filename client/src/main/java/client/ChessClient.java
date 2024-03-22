@@ -1,8 +1,10 @@
 package client;
 
+import chess.ChessGame;
 import exception.ResponseException;
 import model.GameData;
 import request.GameCreateRequest;
+import request.GameJoinRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
 import response.GameCreateResponse;
@@ -14,6 +16,7 @@ import server.ServerFacade;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ChessClient {
     private String authToken = null;
@@ -21,7 +24,7 @@ public class ChessClient {
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
     private String username = "LOGGED_OUT";
-    private HashMap<String, String> gameList;
+    private HashMap<String, GameData> gameList;
 
     public ChessClient(String url) {
         serverUrl = url;
@@ -39,6 +42,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create_game" -> createGame(params[0]);
                 case "list_games" -> listGames();
+                case "join_game" -> joinGame(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -99,13 +103,41 @@ public class ChessClient {
         StringBuilder sb = new StringBuilder();
         int counter = 1;
         for (GameData game : games ) {
-            gameList.put(String.format("%s", counter), game.toString());
+            gameList.put(String.format("%s", counter), game);
 
             sb.append(String.format("%s -> ", counter)).append(game).append("\n");
             counter++;
         }
         return sb.toString();
+    }
 
+    public String joinGame(String... params) throws ResponseException {
+        assertSignedIn();
+
+        if (params.length == 2) {
+            int id = gameList.get(params[0]).getID();
+
+            if (Objects.equals(params[1], "white")) {
+                GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, id);
+
+                server.joinGame(gameJoinRequest, authToken);
+
+            } else if (Objects.equals(params[1], "black")) {
+                GameJoinRequest gameJoinRequest= new GameJoinRequest(ChessGame.TeamColor.BLACK, id);
+
+                server.joinGame(gameJoinRequest, authToken);
+            }
+
+            return String.format("Joined game [%s] as %s\n", params[0], params[1]);
+
+        } else if (params.length == 1) {
+            int id = gameList.get(params[0]).getID();
+            GameJoinRequest gameJoinRequest = new GameJoinRequest(null, id);
+            server.joinGame(gameJoinRequest, authToken);
+            return String.format("Joined game [%s] as OBSERVER\n", params[0]);
+        }
+
+        throw new ResponseException(400, "Bad request.\n");
     }
 
     public String logout() throws ResponseException {

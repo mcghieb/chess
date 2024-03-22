@@ -3,12 +3,10 @@ package server;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import request.GameCreateRequest;
+import request.GameJoinRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
-import response.GameCreateResponse;
-import response.GameListResponse;
-import response.LoginResponse;
-import response.RegisterResponse;
+import response.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +54,12 @@ public class ServerFacade {
         var path = "/game";
 
         return this.makeRequest("GET", path, null, GameListResponse.class, authToken);
+    }
+
+    public void joinGame(GameJoinRequest gameJoinRequest, String authToken) throws ResponseException {
+        var path = "/game";
+
+        this.makeRequest("PUT", path, gameJoinRequest, ResponseContainer.class, authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
