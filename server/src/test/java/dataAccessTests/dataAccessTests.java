@@ -2,7 +2,6 @@ package dataAccessTests;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import com.sun.source.tree.AssertTree;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseManager;
