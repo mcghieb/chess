@@ -1,6 +1,7 @@
 package client;
 
 import exception.ResponseException;
+import model.GameData;
 import request.GameCreateRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
@@ -10,7 +11,9 @@ import response.LoginResponse;
 import response.RegisterResponse;
 import server.ServerFacade;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class ChessClient {
     private String authToken = null;
@@ -18,6 +21,7 @@ public class ChessClient {
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
     private String username = "LOGGED_OUT";
+    private HashMap<String, String> gameList;
 
     public ChessClient(String url) {
         serverUrl = url;
@@ -88,8 +92,20 @@ public class ChessClient {
     public String listGames() throws ResponseException {
         assertSignedIn();
         GameListResponse gameListResponse = server.listGames(authToken);
+        gameList = new HashMap<>();
 
-        return gameListResponse.getList();
+        ArrayList<GameData> games = gameListResponse.getList();
+
+        StringBuilder sb = new StringBuilder();
+        int counter = 1;
+        for (GameData game : games ) {
+            gameList.put(String.format("%s", counter), game.toString());
+
+            sb.append(String.format("%s -> ", counter)).append(game).append("\n");
+            counter++;
+        }
+        return sb.toString();
+
     }
 
     public String logout() throws ResponseException {
@@ -101,7 +117,7 @@ public class ChessClient {
         state = State.LOGGEDOUT;
         username = "LOGGED_OUT";
 
-        return "Logged out.";
+        return "Logged out.\n";
     }
 
     public String help() {

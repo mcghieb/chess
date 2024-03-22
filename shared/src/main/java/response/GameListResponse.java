@@ -12,14 +12,8 @@ public class GameListResponse extends ResponseContainer {
         this.games = games;
     }
 
-    public String getList() {
-        StringBuilder sb = new StringBuilder();
-        int counter = 1;
-        for (GameData game : games ) {
-            sb.append(String.format("%s -> ", counter)).append(game.toString()).append("\n");
-            counter++;
-        }
-        return sb.toString();
+    public ArrayList<GameData> getList() {
+        return games;
     }
 
 }
