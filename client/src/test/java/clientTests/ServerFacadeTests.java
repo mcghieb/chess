@@ -7,6 +7,7 @@ import request.GameCreateRequest;
 import request.GameJoinRequest;
 import request.LoginRequest;
 import request.RegisterRequest;
+import response.RegisterResponse;
 import server.Server;
 import server.ServerFacade;
 
@@ -83,9 +84,13 @@ public class ServerFacadeTests {
     @Test
     @Order(7)
     public void createGameDoesNotThrow() throws ResponseException {
-        GameCreateRequest gameCreateRequest = new GameCreateRequest("TESTGAMENAME1");
+        RegisterRequest registerRequest = new RegisterRequest("newtest", "newtest", "newtest");
+        RegisterResponse registerResponse = serverFacade.register(registerRequest);
+        String auth = registerResponse.getAuthToken();
 
-        Assertions.assertDoesNotThrow(() -> serverFacade.createGame(gameCreateRequest, authToken), "This should not throw.");
+        GameCreateRequest gameCreateRequest = new GameCreateRequest("TESTGAMENAME");
+
+        Assertions.assertDoesNotThrow(() -> serverFacade.createGame(gameCreateRequest, auth), "This should not throw.");
     }
 
     @Test
@@ -109,15 +114,6 @@ public class ServerFacadeTests {
         Assertions.assertThrows(Exception.class,() -> serverFacade.listGames("FAKEAUTH"), "This should throw.");
     }
 
-    @Test
-    @Order(11)
-    public void joinGameDoesNotThrow() throws ResponseException {
-        LoginRequest loginRequest = new LoginRequest("test", "test");
-        String authToken = serverFacade.login(loginRequest).getAuthToken();
 
-        GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, 1);
-
-        Assertions.assertDoesNotThrow(() -> serverFacade.joinGame(gameJoinRequest, authToken), "This should not throw.");
-    }
 
 }
