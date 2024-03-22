@@ -42,7 +42,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create_game" -> createGame(params[0]);
                 case "list_games" -> listGames();
-                case "join_game" -> joinGame(params);
+                case "join_game", "observe" -> joinGame(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -139,6 +139,7 @@ public class ChessClient {
 
         throw new ResponseException(400, "Bad request.\n");
     }
+
 
     public String logout() throws ResponseException {
         assertSignedIn();
