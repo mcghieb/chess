@@ -3,11 +3,11 @@ package handler;
 import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
-import handler.request.GameCreateRequest;
-import handler.request.GameJoinRequest;
-import handler.response.GameCreateResponse;
-import handler.response.GameListResponse;
-import handler.response.ResponseContainer;
+import request.GameCreateRequest;
+import request.GameJoinRequest;
+import response.GameCreateResponse;
+import response.GameListResponse;
+import response.ResponseContainer;
 import service.GameService;
 import spark.Request;
 

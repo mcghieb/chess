@@ -4,8 +4,7 @@ import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
 import dataAccess.interfaces.AuthDAO;
-import dataAccess.interfaces.UserDAO;
-import handler.response.ResponseContainer;
+import response.ResponseContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import service.AuthService;
 
 import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class AuthServiceTest {
     private static DataAccess dataAccess;

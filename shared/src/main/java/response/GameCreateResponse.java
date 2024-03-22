@@ -1,4 +1,4 @@
-package handler.response;
+package response;
 
 public class GameCreateResponse extends ResponseContainer {
     Integer gameID;

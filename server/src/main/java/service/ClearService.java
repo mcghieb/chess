@@ -1,7 +1,7 @@
 package service;
 
 import dataAccess.DataAccess;
-import handler.response.ResponseContainer;
+import response.ResponseContainer;
 
 public class ClearService {
     private DataAccess dataAccess;

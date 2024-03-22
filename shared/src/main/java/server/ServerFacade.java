@@ -2,6 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import request.RegisterRequest;
+import response.RegisterResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,16 +18,29 @@ public class ServerFacade {
 
     private final String serverUrl;
 
+
     public ServerFacade(String url) {
         serverUrl = url;
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
+        var path = "/user";
+
+        return this.makeRequest("POST", path, registerRequest, RegisterResponse.class, null );
+    }
+
+
+
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (authToken != null) {
+                http.addRequestProperty("authorization", authToken);
+            }
 
             writeBody(request, http);
             http.connect();

@@ -3,10 +3,9 @@ package server;
 import com.google.gson.Gson;
 import handler.*;
 import dataAccess.*;
-import handler.response.*;
+import response.*;
 import spark.*;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
 public class Server {

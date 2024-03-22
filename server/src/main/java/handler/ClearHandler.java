@@ -1,9 +1,8 @@
 package handler;
 
 import dataAccess.DataAccess;
-import handler.response.ResponseContainer;
+import response.ResponseContainer;
 import service.ClearService;
-import spark.Response;
 
 public class ClearHandler extends Handler {
     public ClearHandler(DataAccess dataAccess) {

@@ -3,11 +3,10 @@ package handler;
 import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
-import handler.request.LoginRequest;
-import handler.request.RegisterRequest;
-import handler.response.LoginResponse;
-import handler.response.RegisterResponse;
-import handler.response.ResponseContainer;
+import request.LoginRequest;
+import request.RegisterRequest;
+import response.LoginResponse;
+import response.RegisterResponse;
 import service.UserService;
 import spark.Request;
 

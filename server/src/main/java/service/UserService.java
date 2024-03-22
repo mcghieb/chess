@@ -3,10 +3,10 @@ package service;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.UserDAO;
-import handler.request.LoginRequest;
-import handler.request.RegisterRequest;
-import handler.response.LoginResponse;
-import handler.response.RegisterResponse;
+import request.LoginRequest;
+import request.RegisterRequest;
+import response.LoginResponse;
+import response.RegisterResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.SQLException;

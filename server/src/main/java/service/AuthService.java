@@ -3,7 +3,7 @@ package service;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.AuthDAO;
-import handler.response.ResponseContainer;
+import response.ResponseContainer;
 
 import java.sql.SQLException;
 
