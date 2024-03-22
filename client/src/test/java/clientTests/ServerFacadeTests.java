@@ -114,6 +114,23 @@ public class ServerFacadeTests {
         Assertions.assertThrows(Exception.class,() -> serverFacade.listGames("FAKEAUTH"), "This should throw.");
     }
 
+    @Test
+    @Order(11)
+    public void joinGameDoesNotThrow() throws ResponseException {
+        RegisterRequest registerRequest = new RegisterRequest("jointest", "jointest", "jointest");
+        RegisterResponse registerResponse = serverFacade.register(registerRequest);
+        String auth = registerResponse.getAuthToken();
+
+        GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, 1);
+
+        Assertions.assertDoesNotThrow(() -> serverFacade.joinGame(gameJoinRequest, auth), "This should not throw.");
+    }
+
+    @Test
+    @Order(11)
+    public void joinGameDoesThrow() throws ResponseException {
+        Assertions.assertThrows(Exception.class, () -> serverFacade.joinGame(null, null), "This should throw.");
+    }
 
 
 }
