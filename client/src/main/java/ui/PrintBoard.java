@@ -7,7 +7,6 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 
@@ -34,7 +33,6 @@ public class PrintBoard {
         printHeaderFooter(direction, out);
         printBoard(board, direction, out);
         printHeaderFooter(direction, out);
-//        printHeaderFooter(-1, out);
     }
 
     private static void printHeaderFooter(int direction, PrintStream out) {
@@ -75,7 +73,6 @@ public class PrintBoard {
                         printPiece(board.getPiece(position), out);
                     }
 
-
                     if (col == 8) {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_BLACK);
@@ -96,8 +93,6 @@ public class PrintBoard {
                         out.print(SET_BG_COLOR_BLACK);
                     }
 
-
-
                     ChessPosition position = new ChessPosition(row, col);
 
                     if (board.getPiece(position) == null) {
@@ -105,7 +100,6 @@ public class PrintBoard {
                     } else {
                         printPiece(board.getPiece(position), out);
                     }
-
 
                     if (col == 1) {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
