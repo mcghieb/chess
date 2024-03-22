@@ -31,6 +31,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> registerUser(params);
                 case "login" -> login(params);
+                case "logout" -> logout();
                 case "create_game" -> createGame(params[0]);
                 case "quit" -> "quit";
                 default -> help();
@@ -49,7 +50,7 @@ public class ChessClient {
             state = State.LOGGEDIN;
             authToken = registerResponse.getAuthToken();
 
-            return String.format("Successfully registered [%s]\n", username);
+            return String.format("Successfully registered [%s]\n", username) + help();
         }
 
         throw new ResponseException(400, "Bad request.\n");
@@ -64,7 +65,7 @@ public class ChessClient {
             state = State.LOGGEDIN;
             authToken = loginResponse.getAuthToken();
 
-            return String.format("Logged in as [%s]\n", loginResponse.getUsername());
+            return String.format("Logged in as [%s]\n", loginResponse.getUsername()) + help();
         }
 
         throw new ResponseException(400, "Bad request.\n");
@@ -82,6 +83,17 @@ public class ChessClient {
         throw new ResponseException(400, "Bad request.\n");
     }
 
+    public String logout() throws ResponseException {
+        assertSignedIn();
+
+        server.logout(authToken);
+
+        authToken = null;
+        state = State.LOGGEDOUT;
+        username = "LOGGED_OUT";
+
+        return "Logged out.";
+    }
 
     public String help() {
         if (state == State.LOGGEDOUT) {
