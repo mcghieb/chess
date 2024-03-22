@@ -13,4 +13,8 @@ public class RegisterResponse extends ResponseContainer {
     public String getAuthToken() {
         return authToken;
     }
+
+    public String getUsername() {
+        return username;
+    }
 }

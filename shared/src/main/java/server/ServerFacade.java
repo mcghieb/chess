@@ -2,7 +2,11 @@ package server;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import request.GameCreateRequest;
+import request.LoginRequest;
 import request.RegisterRequest;
+import response.GameCreateResponse;
+import response.LoginResponse;
 import response.RegisterResponse;
 
 import java.io.IOException;
@@ -27,6 +31,17 @@ public class ServerFacade {
         var path = "/user";
 
         return this.makeRequest("POST", path, registerRequest, RegisterResponse.class, null );
+    }
+
+    public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
+        var path = "/session";
+
+        return this.makeRequest("POST", path, loginRequest, LoginResponse.class, null);
+    }
+
+    public GameCreateResponse createGame(GameCreateRequest gameCreateRequest, String authToken) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, gameCreateRequest, GameCreateResponse.class, authToken);
     }
 
 
