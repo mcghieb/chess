@@ -64,4 +64,9 @@ public class MemoryGameDAO implements GameDAO {
         games = new HashMap<>();
     }
 
+
+    public void updateBoard(String gameID, ChessGame chessGame) {
+
+    }
+
 }

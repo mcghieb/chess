@@ -4,14 +4,18 @@ import com.google.gson.Gson;
 import handler.*;
 import dataAccess.*;
 import response.*;
+import server.websocket.WebSocketHandler;
 import spark.*;
 
 import java.sql.SQLException;
 
 public class Server {
     private DataAccess dataAccess;
+    public WebSocketHandler webSocketHandler;
 
-    public Server() { }
+    public Server() {
+
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -22,10 +26,12 @@ public class Server {
         try {
 //            DatabaseManager.createDatabase();
             dataAccess = new SQLDataAccess();
+            webSocketHandler = new WebSocketHandler(dataAccess);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
 
+        Spark.webSocket("/connect", webSocketHandler);
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);

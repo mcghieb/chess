@@ -1,12 +1,14 @@
 package client;
 
+import webSocketMessages.serverMessages.ServerMessage;
+
 import java.util.Scanner;
 
 public class Repl {
     public ChessClient client;
 
     public Repl(String serverURL) {
-        client = new ChessClient(serverURL);
+        client = new ChessClient(serverURL, this);
     }
 
     public void run() {
@@ -30,4 +32,11 @@ public class Repl {
         System.out.println();
     }
 
+    public void notify(ServerMessage msg) {
+        System.out.println(msg.getMessage());
+    }
+
+    public void printGame(ServerMessage notification) {
+        client.printBoard(notification.game.getBoard());
+    }
 }

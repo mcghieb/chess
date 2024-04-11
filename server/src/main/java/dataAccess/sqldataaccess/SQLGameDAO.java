@@ -79,6 +79,20 @@ public class SQLGameDAO implements GameDAO {
         }
     }
 
+    public void updateBoard(String gameID, ChessGame chessGame) {
+        try (var conn = DatabaseManager.getConnection()) {
+
+            String statement = "update game set game = ? where game_id = ?";
+            try (var sql = conn.prepareStatement(statement)) {
+                sql.setString(1, String.valueOf(new Gson().toJson(chessGame)));
+                sql.setString(2, String.valueOf(gameID));
+
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public void updateGame(Integer gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException, SQLException {
         makeObservers();

@@ -5,6 +5,7 @@ target
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+toDo.txt
 
 ### Mac OS ###
 .DS_Store
