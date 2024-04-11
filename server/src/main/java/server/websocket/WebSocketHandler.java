@@ -74,38 +74,38 @@ public class WebSocketHandler {
 
 
     private void joinPlayer(Session session,UserGameCommand command) throws IOException, DataAccessException, SQLException {
-            String username = dataAccess.getAuthDAO().getUsername(command.authToken);
-            connections.add(username, session, command.gameID);
+        String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+        connections.add(username, session, command.gameID);
 
-            GameData gameData = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID));
+        GameData gameData = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID));
 
-            String color = (command.playerColor == ChessGame.TeamColor.WHITE) ? "white" : "black";
-            var message = String.format("%s joined the game as %s", username, color);
-            var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
-            ChessGame game = gameData.getGame();
-            var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
-            loadNotification.game = game;
+        String color = (command.playerColor == ChessGame.TeamColor.WHITE) ? "white" : "black";
+        var message = String.format("%s joined the game as %s", username, color);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
+        ChessGame game = gameData.getGame();
+        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
+        loadNotification.game = game;
 
-            if (command.playerColor == ChessGame.TeamColor.WHITE) {
-                if (!Objects.equals(gameData.getWhiteUsername(), username)) {
-                    notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR,null, "400: Bad Request.");
-                    session.getRemote().sendString(new Gson().toJson(notification));
-                } else {
-                    connections.broadcast(username, notification, command.gameID);
-                    session.getRemote().sendString(new Gson().toJson(loadNotification));
-                }
-
-
+        if (command.playerColor == ChessGame.TeamColor.WHITE) {
+            if (!Objects.equals(gameData.getWhiteUsername(), username)) {
+                notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR,null, "400: Bad Request.");
+                session.getRemote().sendString(new Gson().toJson(notification));
             } else {
-                if (!Objects.equals(gameData.getBlackUsername(), username)) {
-                    notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
-                    session.getRemote().sendString(new Gson().toJson(notification));
-                } else {
-                    connections.broadcast(username, notification, command.gameID);
-                    session.getRemote().sendString(new Gson().toJson(loadNotification));
-                }
-
+                connections.broadcast(username, notification, command.gameID);
+                session.getRemote().sendString(new Gson().toJson(loadNotification));
             }
+
+
+        } else {
+            if (!Objects.equals(gameData.getBlackUsername(), username)) {
+                notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
+                session.getRemote().sendString(new Gson().toJson(notification));
+            } else {
+                connections.broadcast(username, notification, command.gameID);
+                session.getRemote().sendString(new Gson().toJson(loadNotification));
+            }
+
+        }
 
 //            dataAccess.getGameDAO().updateGame(Integer.parseInt(command.gameID), command.playerColor, username);
 
@@ -120,17 +120,24 @@ public class WebSocketHandler {
 
     private void joinObserver(Session session, UserGameCommand command) throws IOException, DataAccessException {
         String username = dataAccess.getAuthDAO().getUsername(command.authToken);
-        connections.add(username, session, command.gameID);
 
-        var message = String.format("%s joined the game as an observer", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
+        if (username != null && dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID)) != null) {
+            connections.add(username, session, command.gameID);
 
-        connections.broadcast(username, notification, command.gameID);
+            var message = String.format("%s joined the game as an observer", username);
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
 
-        ChessGame game = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID)).getGame();
-        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
-        loadNotification.game = game;
-        session.getRemote().sendString(new Gson().toJson(loadNotification));
+            connections.broadcast(username, notification, command.gameID);
+
+            ChessGame game = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID)).getGame();
+            var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
+            loadNotification.game = game;
+            session.getRemote().sendString(new Gson().toJson(loadNotification));
+        } else {
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
+            session.getRemote().sendString(new Gson().toJson(notification));
+        }
+
     }
 
 
