@@ -7,8 +7,7 @@ public class Main {
             var port = 8080;
             if (args.length > 0) {
                 port = Integer.parseInt(args[0]);
-            }
-            int actualPort = new Server().run(port);
+            }           int actualPort = new Server().run(port);
             System.out.println("Port: " + actualPort);
 
         } catch (Throwable ex) {

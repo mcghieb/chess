@@ -30,6 +30,7 @@ public class WebSocketHandler {
 
     public WebSocketHandler(DataAccess dataAccess) {
         this.dataAccess=dataAccess;
+        finishedGames = new ArrayList<>();
     }
 
     @OnWebSocketMessage
@@ -46,12 +47,18 @@ public class WebSocketHandler {
     }
 
     private void makeMove(Session session, UserGameCommand command) throws DataAccessException, InvalidMoveException, IOException {
+        String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+
         GameDAO gameDAO = dataAccess.getGameDAO();
         GameData gameData = gameDAO.listGames().get(Integer.parseInt(command.gameID));
         ChessGame chessGame = gameData.getGame();
+
+        ChessGame.TeamColor turn = chessGame.getTeamTurn();
+        String userTurn = (turn == ChessGame.TeamColor.WHITE) ? gameData.getWhiteUsername() : gameData.getBlackUsername();
+
         ChessMove chessMove = command.move;
 
-        if (chessGame.validMoves(chessMove.getStartPosition()).contains(chessMove)) {
+        if (chessGame.validMoves(chessMove.getStartPosition()).contains(chessMove) && !command.gameOver && Objects.equals(userTurn, username)) {
             chessGame.makeMove(chessMove);
             gameDAO.updateBoard(command.gameID, chessGame);
             var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
@@ -59,7 +66,7 @@ public class WebSocketHandler {
 
             connections.broadcast("", loadNotification, command.gameID);
 
-            String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+            username = dataAccess.getAuthDAO().getUsername(command.authToken);
 
             var msg = username + " made a move.";
             var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, msg, null );

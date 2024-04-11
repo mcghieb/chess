@@ -39,6 +39,7 @@ public class UserGameCommand {
     public ChessGame.TeamColor playerColor;
     public String gameID;
     public ChessMove move;
+    public boolean gameOver;
 
     public String getAuthString() {
         return authToken;

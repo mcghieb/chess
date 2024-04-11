@@ -35,6 +35,7 @@ public class ChessClient {
     public boolean gameOver;
     private HashMap<String, GameData> gameList;
     public ChessBoard board;
+    public ChessGame.TeamColor color;
 
     public ChessClient(String url, Repl notificationHandler) {
         this.notificationHandler = notificationHandler;
@@ -82,8 +83,9 @@ public class ChessClient {
 
         ChessMove move = new ChessMove(startPosition, endPosition, promotionPiece);
 
-        var notification = new UserGameCommand(authToken, UserGameCommand.CommandType.MAKE_MOVE, null, gameId);
+        var notification = new UserGameCommand(authToken, UserGameCommand.CommandType.MAKE_MOVE, color, gameId);
         notification.move = move;
+        notification.gameOver = gameOver;
 
         ws.makeMove(notification);
 
@@ -178,6 +180,7 @@ public class ChessClient {
             int id = gameList.get(params[0]).getID();
 
             if (Objects.equals(params[1], "white")) {
+                color = ChessGame.TeamColor.WHITE;
                 GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, id);
 
                 server.joinGame(gameJoinRequest, authToken);
@@ -188,6 +191,7 @@ public class ChessClient {
                 boardDirection= 2;
 
             } else if (Objects.equals(params[1], "black")) {
+                color = ChessGame.TeamColor.BLACK;
                 GameJoinRequest gameJoinRequest= new GameJoinRequest(ChessGame.TeamColor.BLACK, id);
 
                 server.joinGame(gameJoinRequest, authToken);
@@ -201,6 +205,7 @@ public class ChessClient {
             return String.format("Joined game [%s] as %s\n", params[0], params[1]);
 
         } else if (params.length == 1) {
+            color = null;
             int id = gameList.get(params[0]).getID();
             GameJoinRequest gameJoinRequest = new GameJoinRequest(null, id);
             server.joinGame(gameJoinRequest, authToken);
@@ -231,6 +236,7 @@ public class ChessClient {
         ws.leave(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
 
         boardDirection = 0;
+        color = null;
         gameId = null;
         gameList = null;
         state = State.LOGGEDIN;
