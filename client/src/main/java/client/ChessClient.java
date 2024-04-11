@@ -169,15 +169,16 @@ public class ChessClient {
     }
 
     public String help() {
-        if (state == State.LOGGEDOUT) {
-            return """
+        switch (state) {
+            case State.LOGGEDOUT:
+                return """
                     - login <username> <password>
                     - register <username> <password> <email>
                     - help
                     - quit
                     """;
-        }
-        return """
+            case State.LOGGEDIN:
+                return """
                 - help
                 - logout
                 - create_game <game_name>
@@ -186,6 +187,22 @@ public class ChessClient {
                 - observe <game_id>
                 - quit
                 """;
+            case State.GAMEOVER:
+                return """
+                        - help
+                        - redraw_board
+                        - leave""";
+            case State.INGAME:
+                return """
+                        - help
+                        - redraw_board
+                        - leave
+                        - make_move <start position> <end position>
+                        - resign
+                        - highlight_legal_moves <piece position>""";
+            default:
+                return "This is a secret menu and we don't know how you found it. Good job kiddo. \n(This is a feature not a bug):\n- quit\n\n";
+        }
     }
 
     private void assertSignedIn() throws ResponseException {
