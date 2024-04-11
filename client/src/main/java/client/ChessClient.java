@@ -2,6 +2,7 @@ package client;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import client.websocket.WebSocketFacade;
 import exception.ResponseException;
 import model.GameData;
 import request.GameCreateRequest;
@@ -21,14 +22,19 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class ChessClient {
+    private final Repl notificationHandler;
+    private WebSocketFacade ws;
     private String authToken = null;
     private String serverUrl;
     private ServerFacade server;
     private State state = State.LOGGEDOUT;
     private String username = "LOGGED_OUT";
+    private int boardDirection;
+    private String gameId;
     private HashMap<String, GameData> gameList;
 
-    public ChessClient(String url) {
+    public ChessClient(String url, Repl notificationHandler) {
+        this.notificationHandler = notificationHandler;
         serverUrl = url;
         server = new ServerFacade(serverUrl);
     }
@@ -113,8 +119,28 @@ public class ChessClient {
         return sb.toString();
     }
 
+    void loadGames() throws ResponseException {
+        assertSignedIn();
+        GameListResponse gameListResponse = server.listGames(authToken);
+        gameList = new HashMap<>();
+
+        ArrayList<GameData> games = gameListResponse.getList();
+
+        StringBuilder sb = new StringBuilder();
+        int counter = 1;
+        for (GameData game : games ) {
+            gameList.put(String.format("%s", counter), game);
+
+            sb.append(String.format("%s -> ", counter)).append(game).append("\n");
+            counter++;
+        }
+    }
+
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();
+        loadGames();
+        ws = new WebSocketFacade(serverUrl, notificationHandler);
+        gameId = params[0];
 
         if (params.length == 2) {
             int id = gameList.get(params[0]).getID();
@@ -123,21 +149,31 @@ public class ChessClient {
                 GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, id);
 
                 server.joinGame(gameJoinRequest, authToken);
-                printBoard(params[0]);
+                ws.joinPlayer(authToken, username,"white", params[0]);
+//                printBoard(params[0], 2);
+                boardDirection= 2;
+
             } else if (Objects.equals(params[1], "black")) {
                 GameJoinRequest gameJoinRequest= new GameJoinRequest(ChessGame.TeamColor.BLACK, id);
 
                 server.joinGame(gameJoinRequest, authToken);
-                printBoard(params[0]);
+                ws.joinPlayer(authToken, username,"black", params[0]);
+//                printBoard(params[0], 1);
+                boardDirection= 1;
             }
 
+            state = State.INGAME;
             return String.format("Joined game [%s] as %s\n", params[0], params[1]);
 
         } else if (params.length == 1) {
             int id = gameList.get(params[0]).getID();
             GameJoinRequest gameJoinRequest = new GameJoinRequest(null, id);
             server.joinGame(gameJoinRequest, authToken);
-            printBoard(params[0]);
+//            printBoard(params[0], 2);
+
+            ws.joinObserver(authToken, username, params[0]);
+            boardDirection= 2;
+            state = State.INGAME;
             return String.format("Joined game [%s] as OBSERVER\n", params[0]);
         }
 
@@ -145,14 +181,12 @@ public class ChessClient {
     }
 
 
-    private void printBoard(String gameListID) {
-        GameData gameData = gameList.get(gameListID);
+    public void printBoard() {
+        GameData gameData = gameList.get(gameId);
         ChessGame game = gameData.getGame();
         ChessBoard board = game.getBoard();
 
-//        System.out.print(board.toString());
-
-        PrintBoard.printGame(board);
+        PrintBoard.printGame(board, boardDirection);
     }
 
 
@@ -164,6 +198,9 @@ public class ChessClient {
         authToken = null;
         state = State.LOGGEDOUT;
         username = "LOGGED_OUT";
+        boardDirection = 0;
+        gameId = null;
+        gameList = null;
 
         return "Logged out.\n";
     }
@@ -199,7 +236,8 @@ public class ChessClient {
                         - leave
                         - make_move <start position> <end position>
                         - resign
-                        - highlight_legal_moves <piece position>""";
+                        - highlight_legal_moves <piece position>
+                        """;
             default:
                 return "This is a secret menu and we don't know how you found it. Good job kiddo. \n(This is a feature not a bug):\n- quit\n\n";
         }

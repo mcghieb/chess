@@ -10,11 +10,22 @@ import java.util.Objects;
  */
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken) {
+    public UserGameCommand(String authToken, String username, CommandType commandType, String payload, String gameId) {
         this.authToken = authToken;
+        this.username = username;
+        this.payload=payload;
+        this.commandType = commandType;
+        this.gameId = gameId;
     }
 
+    public String getGameId() {
+        return gameId;
+    }
+
+
     public enum CommandType {
+        ENTER_SERVER,
+        LEAVE_SERVER,
         JOIN_PLAYER,
         JOIN_OBSERVER,
         MAKE_MOVE,
@@ -23,8 +34,17 @@ public class UserGameCommand {
     }
 
     protected CommandType commandType;
-
+    private final String username;
     private final String authToken;
+    private final String payload;
+    private final String gameId;
+
+    public String getPayload() {
+        return payload;
+    }
+    public String getUsername() {
+        return username;
+    };
 
     public String getAuthString() {
         return authToken;

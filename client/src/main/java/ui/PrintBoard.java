@@ -12,17 +12,17 @@ import static ui.EscapeSequences.*;
 
 public class PrintBoard {
 
-    public static void printGame(ChessBoard board) {
+    public static void printGame(ChessBoard board, int direction) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
 
-        // BLACK'S PERSPECTIVE
-        printWhole(board, 1, out);
+//         BLACK'S PERSPECTIVE
+        printWhole(board, direction, out);
 
-        out.print("\n\n\n");
-
-        // WHITE'S PERSPECTIVE
-        printWhole(board,2,out);
+//        out.print("\n\n\n");
+//
+//        // WHITE'S PERSPECTIVE
+//        printWhole(board,2,out);
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
