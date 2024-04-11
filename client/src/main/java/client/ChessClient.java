@@ -70,15 +70,16 @@ public class ChessClient {
     }
 
     private String make_move(String... params) throws ResponseException {
-        ChessPosition startPosition = new ChessPosition(params[1].charAt(1),params[1].charAt(3));
-        ChessPosition endPosition = new ChessPosition(params[2].charAt(1),params[2].charAt(3));
+        ChessPosition startPosition = new ChessPosition(Integer.parseInt(params[0].substring(1,2)), Integer.parseInt(params[0].substring(3,4)));
+        ChessPosition endPosition = new ChessPosition(Integer.parseInt(params[1].substring(1,2)), Integer.parseInt(params[1].substring(3,4)));
         ChessPiece.PieceType promotionPiece = null;
-
-        switch (params[3]) {
-            case "bishop" -> promotionPiece = ChessPiece.PieceType.BISHOP;
-            case "queen" -> promotionPiece = ChessPiece.PieceType.QUEEN;
-            case "rook" -> promotionPiece = ChessPiece.PieceType.ROOK;
-            case "knight" -> promotionPiece = ChessPiece.PieceType.KNIGHT;
+        if (params.length == 3) {
+            switch (params[2]) {
+                case "bishop" -> promotionPiece = ChessPiece.PieceType.BISHOP;
+                case "queen" -> promotionPiece = ChessPiece.PieceType.QUEEN;
+                case "rook" -> promotionPiece = ChessPiece.PieceType.ROOK;
+                case "knight" -> promotionPiece = ChessPiece.PieceType.KNIGHT;
+            }
         }
 
         ChessMove move = new ChessMove(startPosition, endPosition, promotionPiece);
