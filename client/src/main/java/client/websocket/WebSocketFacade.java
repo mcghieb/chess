@@ -48,9 +48,9 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void joinPlayer(String authToken, String username, String payload, String game_id) throws ResponseException {
+    public void joinPlayer(String authToken, String username, String payload, String gameId) throws ResponseException {
         try {
-            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, payload, game_id);
+            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, payload, gameId);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
@@ -58,9 +58,18 @@ public class WebSocketFacade extends Endpoint {
     }
 
 
-    public void joinObserver(String authToken, String username, String game_id) throws ResponseException {
+    public void joinObserver(String authToken, String username, String gameId) throws ResponseException {
         try {
-            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_OBSERVER, null, game_id);
+            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_OBSERVER, null, gameId);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void leave(String username, String gameId) throws ResponseException {
+        try {
+            var command = new UserGameCommand(null, username, UserGameCommand.CommandType.LEAVE, null, gameId);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());

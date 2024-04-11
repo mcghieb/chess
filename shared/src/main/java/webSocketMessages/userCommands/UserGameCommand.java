@@ -24,8 +24,6 @@ public class UserGameCommand {
 
 
     public enum CommandType {
-        ENTER_SERVER,
-        LEAVE_SERVER,
         JOIN_PLAYER,
         JOIN_OBSERVER,
         MAKE_MOVE,

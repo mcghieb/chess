@@ -28,17 +28,18 @@ public class ConnectionManager {
         }
     }
 
-    public void remove(String username) {
-        for (var connections : games.values()) {
-            Iterator<Connection> iterator = connections.iterator();
+    public void remove(String username, String gameId) {
+        var connections = games.get(gameId);
 
-            while (iterator.hasNext()) {
-                Connection connection = iterator.next();
-                if (Objects.equals(connection.username, username)) {
-                    iterator.remove();
-                }
+        Iterator<Connection> iterator = connections.iterator();
+
+        while (iterator.hasNext()) {
+            Connection connection = iterator.next();
+            if (Objects.equals(connection.username, username)) {
+                iterator.remove();
             }
         }
+
     }
 
     public void broadcast(String excludeUsername, ServerMessage notification, String gameId) throws IOException {

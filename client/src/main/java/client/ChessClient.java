@@ -51,6 +51,14 @@ public class ChessClient {
                 case "create_game" -> createGame(params[0]);
                 case "list_games" -> listGames();
                 case "join_game", "observe" -> joinGame(params);
+
+                case "redraw_board" -> printBoard();
+                case "leave" -> leave();
+//                case "make_move" -> ;
+//                case "resign" -> ;
+//                case "highlight_legal_moves" -> ;
+
+
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -181,12 +189,25 @@ public class ChessClient {
     }
 
 
-    public void printBoard() {
+    public String printBoard() {
         GameData gameData = gameList.get(gameId);
         ChessGame game = gameData.getGame();
         ChessBoard board = game.getBoard();
 
         PrintBoard.printGame(board, boardDirection);
+
+        return "";
+    }
+
+
+    public String leave() throws ResponseException {
+        ws.leave(username, gameId);
+
+        boardDirection = 0;
+        gameId = null;
+        gameList = null;
+
+        return "You have left. Please join another game or logout.\n";
     }
 
 
@@ -237,6 +258,7 @@ public class ChessClient {
                         - make_move <start position> <end position>
                         - resign
                         - highlight_legal_moves <piece position>
+                        (positions are entered like [n,n] where n is a digit.)
                         """;
             default:
                 return "This is a secret menu and we don't know how you found it. Good job kiddo. \n(This is a feature not a bug):\n- quit\n\n";

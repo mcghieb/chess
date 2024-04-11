@@ -21,10 +21,19 @@ public class WebSocketHandler {
         switch (command.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, command.getUsername(), command.getPayload(), command.getGameId());
             case JOIN_OBSERVER -> joinObserver(session, command.getUsername(), command.getGameId());
-            case LEAVE_SERVER -> connections.remove(command.getUsername());
+            case LEAVE -> leave(session, command.getUsername(), command.getGameId());
         }
     }
 
+
+    private void leave(Session session, String username, String gameId) throws IOException {
+        session.disconnect();
+        connections.remove(username, gameId);
+
+        var message = String.format("%s has left.", username);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(username, notification, gameId);
+    }
 
 
     private void joinPlayer(Session session, String username, String payload, String gameId) throws IOException {
