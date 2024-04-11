@@ -15,6 +15,7 @@ import response.LoginResponse;
 import response.RegisterResponse;
 import server.ServerFacade;
 import ui.PrintBoard;
+import webSocketMessages.userCommands.UserGameCommand;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,7 +160,9 @@ public class ChessClient {
                 GameJoinRequest gameJoinRequest = new GameJoinRequest(ChessGame.TeamColor.WHITE, id);
 
                 server.joinGame(gameJoinRequest, authToken);
-                ws.joinPlayer(authToken, username,"white", params[0]);
+
+                UserGameCommand userGameCommand = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.WHITE , params[0]);
+                ws.joinPlayer(userGameCommand);
 //                printBoard(params[0], 2);
                 boardDirection= 2;
 
@@ -167,7 +170,8 @@ public class ChessClient {
                 GameJoinRequest gameJoinRequest= new GameJoinRequest(ChessGame.TeamColor.BLACK, id);
 
                 server.joinGame(gameJoinRequest, authToken);
-                ws.joinPlayer(authToken, username,"black", params[0]);
+                UserGameCommand userGameCommand = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.BLACK , params[0]);
+                ws.joinPlayer(userGameCommand);
 //                printBoard(params[0], 1);
                 boardDirection= 1;
             }
@@ -181,7 +185,8 @@ public class ChessClient {
             server.joinGame(gameJoinRequest, authToken);
 //            printBoard(params[0], 2);
 
-            ws.joinObserver(authToken, username, params[0]);
+            UserGameCommand userGameCommand = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_OBSERVER,null , params[0]);
+            ws.joinObserver(userGameCommand);
             boardDirection= 2;
             state = State.OBSERVER;
             return String.format("Joined game [%s] as OBSERVER\n", params[0]);

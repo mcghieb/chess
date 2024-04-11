@@ -11,10 +11,10 @@ import java.sql.SQLException;
 
 public class Server {
     private DataAccess dataAccess;
-    private final WebSocketHandler webSocketHandler;
+    public WebSocketHandler webSocketHandler;
 
     public Server() {
-        webSocketHandler = new WebSocketHandler();
+
     }
 
     public int run(int desiredPort) {
@@ -26,6 +26,7 @@ public class Server {
         try {
 //            DatabaseManager.createDatabase();
             dataAccess = new SQLDataAccess();
+            webSocketHandler = new WebSocketHandler(dataAccess);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

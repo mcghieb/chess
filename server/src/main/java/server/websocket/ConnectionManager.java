@@ -2,6 +2,7 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+//import org.glassfish.grizzly.http.server.Session;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.IOException;
@@ -14,10 +15,11 @@ public class ConnectionManager {
     public final ConcurrentHashMap<String, ArrayList<Connection>> games = new ConcurrentHashMap<>();
 
 
-    public void add(String username, Session session, String gameId) {
-        var connection = new Connection(username, session);
+    public void add(String authToken, Session session, String gameId) {
+        var connection = new Connection(authToken, session);
 
-        if (games.containsKey(gameId)) {
+
+        if (!games.isEmpty() && games.containsKey(gameId)) {
             ArrayList<Connection> conns = games.get(gameId);
             conns.add(connection);
             games.put(gameId, conns);

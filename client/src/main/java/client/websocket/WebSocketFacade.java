@@ -54,49 +54,58 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void joinPlayer(String authToken, String username, String payload, String gameId) throws ResponseException {
+//    public void joinPlayer(String authToken, String username, String payload, String gameId) throws ResponseException {
+//        try {
+//            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, payload, gameId);
+//            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//        } catch (IOException ex) {
+//            throw new ResponseException(500, ex.getMessage());
+//        }
+//    }
+
+    public void joinPlayer(UserGameCommand userGameCommand) throws ResponseException {
         try {
-            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, payload, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, payload, gameId);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
     }
 
 
-    public void joinObserver(String authToken, String username, String gameId) throws ResponseException {
+    public void joinObserver(UserGameCommand userGameCommand) throws ResponseException {
         try {
-            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_OBSERVER, null, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//            var command = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_OBSERVER, null, gameId);
+            this.session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
     }
 
-    public void leave(String username, String gameId) throws ResponseException {
-        try {
-            var command = new UserGameCommand(null, username, UserGameCommand.CommandType.LEAVE, null, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
-        } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
-        }
-    }
-
-    public void resign(String username, String gameId) throws ResponseException {
-        try {
-            var command = new UserGameCommand(null, username, UserGameCommand.CommandType.RESIGN, null, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
-        } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
-        }
-    }
-
-    public void checkGame(String gameId) throws ResponseException {
-        try {
-            var command = new UserGameCommand(null, null, UserGameCommand.CommandType.CHECK_GAME, null, gameId);
-            this.session.getBasicRemote().sendText(new Gson().toJson(command));
-        } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
-        }
-    }
+//    public void leave(String username, String gameId) throws ResponseException {
+//        try {
+//            var command = new UserGameCommand(null, username, UserGameCommand.CommandType.LEAVE, null, gameId);
+//            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//        } catch (IOException ex) {
+//            throw new ResponseException(500, ex.getMessage());
+//        }
+//    }
+//
+//    public void resign(String username, String gameId) throws ResponseException {
+//        try {
+//            var command = new UserGameCommand(null, username, UserGameCommand.CommandType.RESIGN, null, gameId);
+//            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//        } catch (IOException ex) {
+//            throw new ResponseException(500, ex.getMessage());
+//        }
+//    }
+//
+//    public void checkGame(String gameId) throws ResponseException {
+//        try {
+//            var command = new UserGameCommand(null, null, UserGameCommand.CommandType.CHECK_GAME, null, gameId);
+//            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//        } catch (IOException ex) {
+//            throw new ResponseException(500, ex.getMessage());
+//        }
+//    }
 }
