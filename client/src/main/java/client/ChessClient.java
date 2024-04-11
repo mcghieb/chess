@@ -1,8 +1,8 @@
 package client;
 
-import chess.ChessBoard;
-import chess.ChessGame;
+import chess.*;
 import client.websocket.WebSocketFacade;
+import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
 import request.GameCreateRequest;
@@ -34,6 +34,7 @@ public class ChessClient {
     private String gameId;
     public boolean gameOver;
     private HashMap<String, GameData> gameList;
+    public ChessBoard board;
 
     public ChessClient(String url, Repl notificationHandler) {
         this.notificationHandler = notificationHandler;
@@ -53,10 +54,9 @@ public class ChessClient {
                 case "create_game" -> createGame(params[0]);
                 case "list_games" -> listGames();
                 case "join_game", "observe" -> joinGame(params);
-
-                case "redraw_board" -> printBoard();
+                case "redraw_board" -> printBoard(board);
                 case "leave" -> leave();
-//                case "make_move" -> ;
+                case "make_move" -> make_move(params);
                 case "resign" -> resign();
 //                case "highlight_legal_moves" -> ;
 
@@ -68,6 +68,27 @@ public class ChessClient {
         }
     }
 
+    private String make_move(String... params) throws ResponseException {
+        ChessPosition startPosition = new ChessPosition(params[1].charAt(1),params[1].charAt(3));
+        ChessPosition endPosition = new ChessPosition(params[2].charAt(1),params[2].charAt(3));
+        ChessPiece.PieceType promotionPiece = null;
+
+        switch (params[3]) {
+            case "bishop" -> promotionPiece = ChessPiece.PieceType.BISHOP;
+            case "queen" -> promotionPiece = ChessPiece.PieceType.QUEEN;
+            case "rook" -> promotionPiece = ChessPiece.PieceType.ROOK;
+            case "knight" -> promotionPiece = ChessPiece.PieceType.KNIGHT;
+        }
+
+        ChessMove move = new ChessMove(startPosition, endPosition, promotionPiece);
+
+        var notification = new UserGameCommand(authToken, UserGameCommand.CommandType.MAKE_MOVE, null, gameId);
+        notification.move = move;
+
+        ws.makeMove(notification);
+
+        return "";
+    }
 
 
     public String registerUser(String... params) throws ResponseException {
@@ -197,6 +218,7 @@ public class ChessClient {
 
     public String printBoard(ChessBoard board) {
         PrintBoard.printGame(board, boardDirection);
+        this.board = board;
 
         return "";
     }
@@ -206,7 +228,7 @@ public class ChessClient {
             throw new ResponseException(400, "You must join a game first.\n");
         }
 
-        ws.leave(username, gameId);
+        ws.leave(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
 
         boardDirection = 0;
         gameId = null;
@@ -217,7 +239,8 @@ public class ChessClient {
     }
 
     public String resign() throws ResponseException {
-        ws.resign(username, gameId);
+
+        ws.resign(new UserGameCommand(authToken, UserGameCommand.CommandType.RESIGN, null, gameId));
 
         gameOver = true;
 
@@ -228,13 +251,13 @@ public class ChessClient {
 
     public void checkGame() throws ResponseException {
         ws.checkGame(gameId);
-
     }
 
     public String logout() throws ResponseException {
         assertSignedIn();
 
         server.logout(authToken);
+        ws.leave(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
 
         authToken = null;
         state = State.LOGGEDOUT;
@@ -243,7 +266,6 @@ public class ChessClient {
         gameId = null;
         gameList = null;
 
-        ws.leave(username, gameId);
         return "Logged out.\n";
     }
 

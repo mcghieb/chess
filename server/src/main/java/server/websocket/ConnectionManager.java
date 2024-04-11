@@ -2,7 +2,6 @@ package server.websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
-//import org.glassfish.grizzly.http.server.Session;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.IOException;
@@ -60,8 +59,10 @@ public class ConnectionManager {
 
         // Clean up any games that were left open.
         for (var c : removeList) {
-            games.remove(c.username);
+            connections.remove(c);
         }
+
+        games.put(gameId, connections);
     }
 
     public void broadcastToRoot(String username, ServerMessage notification) throws IOException {

@@ -13,4 +13,6 @@ public interface GameDAO {
     void updateGame(Integer gameID, ChessGame.TeamColor playerColor, String username) throws DataAccessException, SQLException;
 
     void clearGame();
+
+    void updateBoard(String gameID, ChessGame chessGame);
 }

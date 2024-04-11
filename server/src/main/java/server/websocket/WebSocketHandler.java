@@ -1,11 +1,14 @@
 package server.websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import dataAccess.interfaces.GameDAO;
 import model.GameData;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -30,15 +33,42 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException, DataAccessException, SQLException {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException, SQLException, InvalidMoveException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, command);
             case JOIN_OBSERVER -> joinObserver(session,command);
+            case MAKE_MOVE -> makeMove(session, command);
 //            case LEAVE -> leave(session, command.getUsername(), command.getGameID());
-//            case RESIGN -> resign(command.getUsername(), command.getGameID());
+            case RESIGN -> resign(command);
             case CHECK_GAME -> checkGame(command.getGameID());
         }
+    }
+
+    private void makeMove(Session session, UserGameCommand command) throws DataAccessException, InvalidMoveException, IOException {
+        GameDAO gameDAO = dataAccess.getGameDAO();
+        GameData gameData = gameDAO.listGames().get(Integer.parseInt(command.gameID));
+        ChessGame chessGame = gameData.getGame();
+        ChessMove chessMove = command.move;
+
+        if (chessGame.validMoves(chessMove.getStartPosition()).contains(chessMove)) {
+            chessGame.makeMove(chessMove);
+            gameDAO.updateBoard(command.gameID, chessGame);
+            var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
+            loadNotification.game = chessGame;
+
+            connections.broadcast("", loadNotification, command.gameID);
+
+            String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+
+            var msg = username + " made a move.";
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, msg, null );
+            connections.broadcast(username, notification, command.gameID);
+        } else {
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
+            session.getRemote().sendString(new Gson().toJson(notification));
+        }
+
     }
 
     private void checkGame(String gameId) throws IOException {
@@ -56,20 +86,23 @@ public class WebSocketHandler {
     }
 
 
-    private void resign(String username, String gameId) throws IOException {
+    private void resign(UserGameCommand command) throws IOException, DataAccessException {
+        String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+
         var message = String.format("%s has resigned.", username);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
-        connections.broadcast("", notification, gameId);
-        finishedGames.add(gameId);
+        connections.broadcast("", notification, command.gameID);
+        finishedGames.add(command.gameID);
     }
 
-    private void leave(Session session, String username, String gameId) throws IOException {
+    private void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {
+        String username = dataAccess.getAuthDAO().getUsername(command.authToken);
         session.disconnect();
-        connections.remove(username, gameId);
+        connections.remove(username, command.gameID);
 
         var message = String.format("%s has left.", username);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
-        connections.broadcast(username, notification, gameId);
+        connections.broadcast(username, notification, command.gameID);
     }
 
 
@@ -132,6 +165,7 @@ public class WebSocketHandler {
             ChessGame game = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID)).getGame();
             var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
             loadNotification.game = game;
+
             session.getRemote().sendString(new Gson().toJson(loadNotification));
         } else {
             var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
