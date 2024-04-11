@@ -36,7 +36,7 @@ public class Repl {
         System.out.println(msg.getMessage());
     }
 
-    public void printGame() {
-        client.printBoard();
+    public void printGame(ServerMessage notification) {
+        client.printBoard(notification.game.getBoard());
     }
 }

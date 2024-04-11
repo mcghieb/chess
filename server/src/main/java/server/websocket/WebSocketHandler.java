@@ -4,6 +4,8 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
+import dataAccess.interfaces.GameDAO;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -11,7 +13,9 @@ import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 @WebSocket
@@ -26,7 +30,7 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException, DataAccessException {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException, SQLException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, command);
@@ -46,7 +50,7 @@ public class WebSocketHandler {
 
         String msg = !gameOver ? "false" : "true";
 
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.MARK_GAME_OVER, msg);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.MARK_GAME_OVER, msg, null);
         connections.broadcast(" ",notification, gameId);
 
     }
@@ -54,7 +58,7 @@ public class WebSocketHandler {
 
     private void resign(String username, String gameId) throws IOException {
         var message = String.format("%s has resigned.", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
         connections.broadcast("", notification, gameId);
         finishedGames.add(gameId);
     }
@@ -64,44 +68,53 @@ public class WebSocketHandler {
         connections.remove(username, gameId);
 
         var message = String.format("%s has left.", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
         connections.broadcast(username, notification, gameId);
     }
 
 
-//    private void joinPlayer(String username, String authToken, String payload, String gameId) throws IOException {
-//
-//
-//
-//        connections.add(username, session, gameId);
-//
-//        String color = payload.contains("white") ? "white" : "black";
-//        var message = String.format("%s joined the game as %s", username, color);
-//        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-//
-//        connections.broadcast(username, notification, gameId);
-//
-//        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,gameId);
-//        connections.broadcastToRoot(username, loadNotification);
-//    }
+    private void joinPlayer(Session session,UserGameCommand command) throws IOException, DataAccessException, SQLException {
+            String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+            connections.add(username, session, command.gameID);
 
-    private void joinPlayer(Session session,UserGameCommand command) throws IOException, DataAccessException {
+            GameData gameData = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID));
 
-        String username = dataAccess.getAuthDAO().getUsername(command.authToken);
+            String color = (command.playerColor == ChessGame.TeamColor.WHITE) ? "white" : "black";
+            var message = String.format("%s joined the game as %s", username, color);
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
+            ChessGame game = gameData.getGame();
+            var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
+            loadNotification.game = game;
+
+            if (command.playerColor == ChessGame.TeamColor.WHITE) {
+                if (!Objects.equals(gameData.getWhiteUsername(), username)) {
+                    notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR,null, "400: Bad Request.");
+                    session.getRemote().sendString(new Gson().toJson(notification));
+                } else {
+                    connections.broadcast(username, notification, command.gameID);
+                    session.getRemote().sendString(new Gson().toJson(loadNotification));
+                }
 
 
-        connections.add(command.authToken, session, command.gameID);
+            } else {
+                if (!Objects.equals(gameData.getBlackUsername(), username)) {
+                    notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
+                    session.getRemote().sendString(new Gson().toJson(notification));
+                } else {
+                    connections.broadcast(username, notification, command.gameID);
+                    session.getRemote().sendString(new Gson().toJson(loadNotification));
+                }
 
-        String color = (command.playerColor == ChessGame.TeamColor.WHITE) ? "white" : "black";
-        var message = String.format("%s joined the game as %s", username, color);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            }
 
-        connections.broadcast(username, notification, command.gameID);
+//            dataAccess.getGameDAO().updateGame(Integer.parseInt(command.gameID), command.playerColor, username);
 
-        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID);
-        session.getRemote().sendString(new Gson().toJson(loadNotification));
 
-//        connections.broadcastToRoot(username, loadNotification);
+
+
+
+
+
     }
 
 
@@ -110,12 +123,14 @@ public class WebSocketHandler {
         connections.add(username, session, command.gameID);
 
         var message = String.format("%s joined the game as an observer", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
 
         connections.broadcast(username, notification, command.gameID);
 
-        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID);
-        connections.broadcastToRoot(username, loadNotification);
+        ChessGame game = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID)).getGame();
+        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
+        loadNotification.game = game;
+        session.getRemote().sendString(new Gson().toJson(loadNotification));
     }
 
 

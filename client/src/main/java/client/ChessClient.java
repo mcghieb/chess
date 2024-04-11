@@ -161,7 +161,7 @@ public class ChessClient {
 
                 server.joinGame(gameJoinRequest, authToken);
 
-                UserGameCommand userGameCommand = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.WHITE , params[0]);
+                UserGameCommand userGameCommand = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.WHITE , params[0]);
                 ws.joinPlayer(userGameCommand);
 //                printBoard(params[0], 2);
                 boardDirection= 2;
@@ -170,7 +170,7 @@ public class ChessClient {
                 GameJoinRequest gameJoinRequest= new GameJoinRequest(ChessGame.TeamColor.BLACK, id);
 
                 server.joinGame(gameJoinRequest, authToken);
-                UserGameCommand userGameCommand = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.BLACK , params[0]);
+                UserGameCommand userGameCommand = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.BLACK , params[0]);
                 ws.joinPlayer(userGameCommand);
 //                printBoard(params[0], 1);
                 boardDirection= 1;
@@ -185,7 +185,7 @@ public class ChessClient {
             server.joinGame(gameJoinRequest, authToken);
 //            printBoard(params[0], 2);
 
-            UserGameCommand userGameCommand = new UserGameCommand(authToken, username, UserGameCommand.CommandType.JOIN_OBSERVER,null , params[0]);
+            UserGameCommand userGameCommand = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_OBSERVER,null , params[0]);
             ws.joinObserver(userGameCommand);
             boardDirection= 2;
             state = State.OBSERVER;
@@ -195,11 +195,7 @@ public class ChessClient {
         throw new ResponseException(400, "Bad request.\n");
     }
 
-    public String printBoard() {
-        GameData gameData = gameList.get(gameId);
-        ChessGame game = gameData.getGame();
-        ChessBoard board = game.getBoard();
-
+    public String printBoard(ChessBoard board) {
         PrintBoard.printGame(board, boardDirection);
 
         return "";
