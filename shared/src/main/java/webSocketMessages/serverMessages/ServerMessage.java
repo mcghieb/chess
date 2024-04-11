@@ -14,7 +14,8 @@ public class ServerMessage {
     public enum ServerMessageType {
         LOAD_GAME,
         ERROR,
-        NOTIFICATION
+        NOTIFICATION,
+        MARK_GAME_OVER,
     }
 
     public ServerMessage(ServerMessageType type, String message) {

@@ -31,6 +31,7 @@ public class ChessClient {
     private String username = "LOGGED_OUT";
     private int boardDirection;
     private String gameId;
+    public boolean gameOver;
     private HashMap<String, GameData> gameList;
 
     public ChessClient(String url, Repl notificationHandler) {
@@ -55,9 +56,8 @@ public class ChessClient {
                 case "redraw_board" -> printBoard();
                 case "leave" -> leave();
 //                case "make_move" -> ;
-//                case "resign" -> ;
+                case "resign" -> resign();
 //                case "highlight_legal_moves" -> ;
-
 
                 case "quit" -> "quit";
                 default -> help();
@@ -66,6 +66,8 @@ public class ChessClient {
             return ex.getMessage();
         }
     }
+
+
 
     public String registerUser(String... params) throws ResponseException {
         if (params.length == 3 && state == State.LOGGEDOUT) {
@@ -170,7 +172,7 @@ public class ChessClient {
                 boardDirection= 1;
             }
 
-            state = State.INGAME;
+            state = State.PLAYER;
             return String.format("Joined game [%s] as %s\n", params[0], params[1]);
 
         } else if (params.length == 1) {
@@ -181,13 +183,12 @@ public class ChessClient {
 
             ws.joinObserver(authToken, username, params[0]);
             boardDirection= 2;
-            state = State.INGAME;
+            state = State.OBSERVER;
             return String.format("Joined game [%s] as OBSERVER\n", params[0]);
         }
 
         throw new ResponseException(400, "Bad request.\n");
     }
-
 
     public String printBoard() {
         GameData gameData = gameList.get(gameId);
@@ -199,17 +200,35 @@ public class ChessClient {
         return "";
     }
 
-
     public String leave() throws ResponseException {
+        if (!player() && !observer()) {
+            throw new ResponseException(400, "You must join a game first.\n");
+        }
+
         ws.leave(username, gameId);
 
         boardDirection = 0;
         gameId = null;
         gameList = null;
+        state = State.LOGGEDIN;
 
         return "You have left. Please join another game or logout.\n";
     }
 
+    public String resign() throws ResponseException {
+        ws.resign(username, gameId);
+
+        gameOver = true;
+
+        checkGame();
+
+        return "";
+    }
+
+    public void checkGame() throws ResponseException {
+        ws.checkGame(gameId);
+
+    }
 
     public String logout() throws ResponseException {
         assertSignedIn();
@@ -223,8 +242,18 @@ public class ChessClient {
         gameId = null;
         gameList = null;
 
+        ws.leave(username, gameId);
         return "Logged out.\n";
     }
+
+    private boolean player() {
+        return state == State.PLAYER;
+    }
+
+    private boolean observer() {
+        return state == State.OBSERVER;
+    }
+
 
     public String help() {
         switch (state) {
@@ -245,18 +274,21 @@ public class ChessClient {
                 - observe <game_id>
                 - quit
                 """;
-            case State.GAMEOVER:
-                return """
-                        - help
-                        - redraw_board
-                        - leave""";
-            case State.INGAME:
+            case State.PLAYER:
                 return """
                         - help
                         - redraw_board
                         - leave
                         - make_move <start position> <end position>
                         - resign
+                        - highlight_legal_moves <piece position>
+                        (positions are entered like [n,n] where n is a digit.)
+                        """;
+            case State.OBSERVER:
+                return """
+                        - help
+                        - redraw_board
+                        - leave
                         - highlight_legal_moves <piece position>
                         (positions are entered like [n,n] where n is a digit.)
                         """;
