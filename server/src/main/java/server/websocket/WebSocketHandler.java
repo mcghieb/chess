@@ -40,7 +40,7 @@ public class WebSocketHandler {
             case JOIN_PLAYER -> joinPlayer(session, command);
             case JOIN_OBSERVER -> joinObserver(session,command);
             case MAKE_MOVE -> makeMove(session, command);
-//            case LEAVE -> leave(session, command.getUsername(), command.getGameID());
+            case LEAVE -> leave(session, command);
             case RESIGN -> resign(command);
             case CHECK_GAME -> checkGame(command.getGameID());
         }
@@ -60,6 +60,18 @@ public class WebSocketHandler {
 
         if (chessGame.validMoves(chessMove.getStartPosition()).contains(chessMove) && !command.gameOver && Objects.equals(userTurn, username)) {
             chessGame.makeMove(chessMove);
+            String user = (chessGame.getTeamTurn() == ChessGame.TeamColor.WHITE) ? gameData.getWhiteUsername() : gameData.getBlackUsername();
+
+            if (chessGame.isInCheckmate(turn)) {
+                var msg = user + " is in checkmate\n";
+                var checkmateNotif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, msg, null);
+                connections.broadcast("", checkmateNotif, command.gameID);
+            } else if (chessGame.isInCheck(turn)) {
+                var msg = user + " is in check\n";
+                var checkNotif = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, msg, null);
+                connections.broadcast("", checkNotif, command.gameID);
+            }
+
             gameDAO.updateBoard(command.gameID, chessGame);
             var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME,command.gameID, null);
             loadNotification.game = chessGame;
