@@ -135,40 +135,31 @@ public class ChessClient {
         throw new ResponseException(400, "Bad request.\n");
     }
 
-    public String listGames() throws ResponseException {
-        assertSignedIn();
-        GameListResponse gameListResponse = server.listGames(authToken);
+    private String processGameList(GameListResponse gameListResponse) {
         gameList = new HashMap<>();
-
         ArrayList<GameData> games = gameListResponse.getList();
-
         StringBuilder sb = new StringBuilder();
         int counter = 1;
-        for (GameData game : games ) {
+        for (GameData game : games) {
             gameList.put(String.format("%s", counter), game);
-
             sb.append(String.format("%s -> ", counter)).append(game).append("\n");
             counter++;
         }
         return sb.toString();
     }
 
+    public String listGames() throws ResponseException {
+        assertSignedIn();
+        GameListResponse gameListResponse = server.listGames(authToken);
+        return processGameList(gameListResponse);
+    }
+
     void loadGames() throws ResponseException {
         assertSignedIn();
         GameListResponse gameListResponse = server.listGames(authToken);
-        gameList = new HashMap<>();
-
-        ArrayList<GameData> games = gameListResponse.getList();
-
-        StringBuilder sb = new StringBuilder();
-        int counter = 1;
-        for (GameData game : games ) {
-            gameList.put(String.format("%s", counter), game);
-
-            sb.append(String.format("%s -> ", counter)).append(game).append("\n");
-            counter++;
-        }
+        processGameList(gameListResponse);
     }
+
 
     public String joinGame(String... params) throws ResponseException {
         assertSignedIn();

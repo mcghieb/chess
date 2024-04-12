@@ -53,26 +53,6 @@ public class WebSocketFacade extends Endpoint {
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
-    
-
-//    public void joinPlayer(UserGameCommand userGameCommand) throws ResponseException {
-//        sendToServer(userGameCommand);
-//    }
-//
-//    public void joinObserver(UserGameCommand userGameCommand) throws ResponseException {
-//        sendToServer(userGameCommand);
-//    }
-//
-//    public void leave(UserGameCommand userGameCommand) throws ResponseException {
-//        sendToServer(userGameCommand);
-//    }
-//
-//    public void resign(UserGameCommand userGameCommand) throws ResponseException {
-//        sendToServer(userGameCommand);
-//    }
-//    public void makeMove(UserGameCommand userGameCommand) throws ResponseException {
-//        sendToServer(userGameCommand);
-//    }
 
     public void checkGame(String gameId) throws ResponseException {
         try {
