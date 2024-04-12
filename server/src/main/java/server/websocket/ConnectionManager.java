@@ -65,23 +65,4 @@ public class ConnectionManager {
         games.put(gameId, connections);
     }
 
-    public void broadcastToRoot(String username, ServerMessage notification) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        ArrayList<Connection> connections = games.get(notification.getMessage());
-
-        for (var c : connections) {
-            if (c.session.isOpen()) {
-                if (c.username.equals(username)) {
-                    c.send(new Gson().toJson(notification));
-                }
-            } else {
-                removeList.add(c);
-            }
-        }
-
-        // Clean up any games that were left open.
-        for (var c : removeList) {
-            games.remove(c.username);
-        }
-    }
 }
