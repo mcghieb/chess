@@ -2,7 +2,6 @@ package client;
 
 import chess.*;
 import client.websocket.WebSocketFacade;
-import com.google.gson.Gson;
 import exception.ResponseException;
 import model.GameData;
 import request.GameCreateRequest;
@@ -57,7 +56,7 @@ public class ChessClient {
                 case "join_game", "observe" -> joinGame(params);
                 case "redraw_board" -> printBoard(board);
                 case "leave" -> leave();
-                case "make_move" -> make_move(params);
+                case "make_move" -> makeMove(params);
                 case "resign" -> resign();
 //                case "highlight_legal_moves" -> ;
 
@@ -69,7 +68,7 @@ public class ChessClient {
         }
     }
 
-    private String make_move(String... params) throws ResponseException {
+    private String makeMove(String... params) throws ResponseException {
         ChessPosition startPosition = new ChessPosition(Integer.parseInt(params[0].substring(1,2)), Integer.parseInt(params[0].substring(3,4)));
         ChessPosition endPosition = new ChessPosition(Integer.parseInt(params[1].substring(1,2)), Integer.parseInt(params[1].substring(3,4)));
         ChessPiece.PieceType promotionPiece = null;
@@ -88,7 +87,7 @@ public class ChessClient {
         notification.move = move;
         notification.gameOver = gameOver;
 
-        ws.makeMove(notification);
+        ws.sendToServer(notification);
 
         return "";
     }
@@ -187,7 +186,7 @@ public class ChessClient {
                 server.joinGame(gameJoinRequest, authToken);
 
                 UserGameCommand userGameCommand = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.WHITE , params[0]);
-                ws.joinPlayer(userGameCommand);
+                ws.sendToServer(userGameCommand);
 //                printBoard(params[0], 2);
                 boardDirection= 2;
 
@@ -197,7 +196,7 @@ public class ChessClient {
 
                 server.joinGame(gameJoinRequest, authToken);
                 UserGameCommand userGameCommand = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, ChessGame.TeamColor.BLACK , params[0]);
-                ws.joinPlayer(userGameCommand);
+                ws.sendToServer(userGameCommand);
 //                printBoard(params[0], 1);
                 boardDirection= 1;
             }
@@ -213,7 +212,7 @@ public class ChessClient {
 //            printBoard(params[0], 2);
 
             UserGameCommand userGameCommand = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_OBSERVER,null , params[0]);
-            ws.joinObserver(userGameCommand);
+            ws.sendToServer(userGameCommand);
             boardDirection= 2;
             state = State.OBSERVER;
             return String.format("Joined game [%s] as OBSERVER\n", params[0]);
@@ -234,7 +233,7 @@ public class ChessClient {
             throw new ResponseException(400, "You must join a game first.\n");
         }
 
-        ws.leave(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
+        ws.sendToServer(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
 
         boardDirection = 0;
         color = null;
@@ -247,7 +246,7 @@ public class ChessClient {
 
     public String resign() throws ResponseException {
 
-        ws.resign(new UserGameCommand(authToken, UserGameCommand.CommandType.RESIGN, null, gameId));
+        ws.sendToServer(new UserGameCommand(authToken, UserGameCommand.CommandType.RESIGN, null, gameId));
 
         gameOver = true;
 
@@ -264,7 +263,7 @@ public class ChessClient {
         assertSignedIn();
 
         server.logout(authToken);
-        ws.leave(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
+        ws.sendToServer(new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, null, gameId));
 
         authToken = null;
         state = State.LOGGEDOUT;
