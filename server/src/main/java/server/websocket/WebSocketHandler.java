@@ -41,7 +41,7 @@ public class WebSocketHandler {
             case JOIN_OBSERVER -> joinObserver(session,command);
             case MAKE_MOVE -> makeMove(session, command);
             case LEAVE -> leave(session, command);
-            case RESIGN -> resign(command);
+            case RESIGN -> resign(session, command);
             case CHECK_GAME -> checkGame(command.getGameID());
         }
     }
@@ -105,13 +105,21 @@ public class WebSocketHandler {
     }
 
 
-    private void resign(UserGameCommand command) throws IOException, DataAccessException {
+    private void resign(Session session, UserGameCommand command) throws IOException, DataAccessException {
         String username = dataAccess.getAuthDAO().getUsername(command.authToken);
 
-        var message = String.format("%s has resigned.", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
-        connections.broadcast("", notification, command.gameID);
-        finishedGames.add(command.gameID);
+        GameData gameData = dataAccess.getGameDAO().listGames().get(Integer.parseInt(command.gameID));
+
+        if (Objects.equals(gameData.getWhiteUsername(), username) || Objects.equals(gameData.getBlackUsername(), username)) {
+            var message = String.format("%s has resigned.", username);
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message, null);
+            connections.broadcast("", notification, command.gameID);
+            finishedGames.add(command.gameID);
+        } else {
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null, "400: Bad Request.");
+            session.getRemote().sendString(new Gson().toJson(notification));
+        }
+
     }
 
     private void leave(Session session, UserGameCommand command) throws IOException, DataAccessException {

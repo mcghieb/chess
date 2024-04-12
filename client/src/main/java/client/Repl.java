@@ -1,5 +1,6 @@
 package client;
 
+import exception.ResponseException;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.util.Scanner;
@@ -32,7 +33,8 @@ public class Repl {
         System.out.println();
     }
 
-    public void notify(ServerMessage msg) {
+    public void notify(ServerMessage msg) throws ResponseException {
+        client.checkGame();
         System.out.println(msg.getMessage());
     }
 

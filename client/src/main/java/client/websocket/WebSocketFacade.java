@@ -34,7 +34,13 @@ public class WebSocketFacade extends Endpoint {
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
                     switch (notification.getServerMessageType()) {
-                        case NOTIFICATION -> notificationHandler.notify(notification);
+                        case NOTIFICATION -> {
+                            try {
+                                notificationHandler.notify(notification);
+                            } catch (ResponseException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                         case LOAD_GAME -> notificationHandler.printGame(notification);
                         case MARK_GAME_OVER -> markGameOver(notification);
                     }
